@@ -1,535 +1,687 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="da">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Incident Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shabab Loop Around Europa · Uge 31, 2026</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1B2430">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Work+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0f1115;--panel:#171a21;--panel2:#1e222b;--line:#2a2f3a;
-    --txt:#e7ebf0;--muted:#8a93a3;--accent:#4f9dff;
-    --crit:#ff4d4f;--high:#ff7a45;--med:#ffc53d;--low:#52c41a;}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px}
-  header{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;
-    align-items:center;justify-content:space-between;background:var(--panel);flex-wrap:wrap;gap:12px}
-  h1{font-size:18px;font-weight:600}h1 span{color:var(--accent)}
-  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .who{font-size:12px;color:var(--muted);margin-right:6px}
-  .who b{color:var(--txt)}.who em{color:var(--accent);font-style:normal;font-weight:600}
-  input,select,textarea,button{font-family:inherit;font-size:13px;border-radius:8px;
-    border:1px solid var(--line);background:var(--panel2);color:var(--txt);padding:9px 11px;outline:none}
-  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-  button{cursor:pointer;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  button.ghost{background:transparent;color:var(--txt)}
-  button.export{background:#1d6f42;border-color:#1d6f42}
-  main{padding:20px 24px}
-  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-  .filters input{min-width:240px}
-  table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden}
-  th{background:#1f4e78;color:#fff;text-align:left;padding:11px 12px;font-size:12px;text-transform:uppercase}
-  td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
-  tr:hover td{background:var(--panel2)}
-  .pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
-  .s-New{background:#2b3445;color:#9db4d4}.s-Assigned{background:#1f3a5f;color:#7fb6ff}
-  .s-Pending{background:#3d3520;color:#ffcf6b}.s-Ongoing{background:#3d2520;color:#ff9b7a}
-  .s-Resolved{background:#1f3d2a;color:#74d99a}.s-Closed{background:#2a2f3a;color:#8a93a3}
-  .p1{color:var(--crit);font-weight:700}.p2{color:var(--high)}.p3{color:var(--med)}.p4{color:var(--low)}
-  .cell-txt{max-width:340px;white-space:pre-wrap;color:var(--muted)}
-  .row-actions{display:flex;gap:6px}.row-actions button{padding:5px 9px}
-  .del{background:#3a1f24;border-color:#5a2a30;color:#ff8a8a}
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10}
-  .overlay.show{display:flex}
-  .modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;
-    width:min(680px,92vw);max-height:90vh;overflow:auto;padding:24px}
-  .modal h2{font-size:16px;margin-bottom:16px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
-  .full{grid-column:1/-1}textarea{resize:vertical;min-height:70px}
-  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
-  .market-box{display:flex;gap:8px;flex-wrap:wrap}
-  .market-box label{flex-direction:row;align-items:center;gap:5px;background:var(--panel2);
-    padding:6px 10px;border-radius:7px;border:1px solid var(--line);cursor:pointer;color:var(--txt)}
-  .empty{text-align:center;padding:40px;color:var(--muted)}
-  .userlist{width:100%;border-collapse:collapse;margin-top:10px}
-  .userlist th,.userlist td{padding:9px 11px;border-top:1px solid var(--line);text-align:left;font-size:13px}
-  .userlist th{background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase}
-  .userlist select{padding:5px 8px;font-size:12px}
-  .badge{font-size:10px;padding:2px 7px;border-radius:10px;background:#1f3a5f;color:#7fb6ff;font-weight:700}
-  .badge.r-admin{background:#3d2520;color:#ff9b7a}.badge.r-editor{background:#1f3d2a;color:#74d99a}
-  .badge.r-read{background:#2a2f3a;color:#8a93a3}
-  .linkbox{background:var(--panel2);border:1px dashed var(--accent);border-radius:8px;
-    padding:10px 12px;margin-top:10px;font-family:monospace;font-size:12px;word-break:break-all;color:var(--txt)}
-  .foot{padding:12px 24px;color:#5a6275;font-size:11px;text-align:center;border-top:1px solid var(--line)}
-  .tabs{display:flex;gap:4px;padding:0 24px;background:var(--panel);border-bottom:1px solid var(--line)}
-  .tab{padding:12px 18px;cursor:pointer;color:var(--muted);font-weight:600;font-size:13px;
-    border:none;background:none;border-bottom:2px solid transparent;border-radius:0}
-  .tab:hover{color:var(--txt)}
-  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-  .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;padding:8px 0}
-  .dash-card{border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid var(--line);
-    background:var(--panel);transition:transform .12s}
-  .dash-card:hover{transform:translateY(-3px)}
-  .dash-head{padding:12px;text-align:center;font-weight:700;font-size:14px;color:#fff;text-transform:uppercase;letter-spacing:.5px}
-  .dash-num{font-size:96px;font-weight:800;text-align:center;padding:30px 0;line-height:1;color:var(--txt)}
-  .dh-p1{background:#d40000}.dh-p2{background:#e8770a}.dh-p3{background:#1d8a35}.dh-p4{background:#2566c4}
-  .blink-p1{animation:bl-p1 1s infinite}.blink-p2{animation:bl-p2 1.1s infinite}
-  .blink-p3{animation:bl-p3 1.2s infinite}.blink-p4{animation:bl-p4 1.3s infinite}
-  @keyframes bl-p1{0%,100%{box-shadow:0 0 0 0 rgba(212,0,0,0)}50%{box-shadow:0 0 24px 4px rgba(212,0,0,.8)}}
-  @keyframes bl-p2{0%,100%{box-shadow:0 0 0 0 rgba(232,119,10,0)}50%{box-shadow:0 0 24px 4px rgba(232,119,10,.8)}}
-  @keyframes bl-p3{0%,100%{box-shadow:0 0 0 0 rgba(29,138,53,0)}50%{box-shadow:0 0 24px 4px rgba(29,138,53,.8)}}
-  @keyframes bl-p4{0%,100%{box-shadow:0 0 0 0 rgba(37,102,196,0)}50%{box-shadow:0 0 24px 4px rgba(37,102,196,.8)}}
-  .dash-sub{text-align:center;color:var(--muted);font-size:12px;padding-bottom:14px}
-  .esc-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
-  .esc-yes{background:#3d2520;color:#ff9b7a}.esc-no{background:#2a2f3a;color:#8a93a3}
-  .viewmore{background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;
-    padding:0;font-size:12px;text-decoration:underline}
-  .cell-snip{color:var(--muted)}
-  .comments{grid-column:1/-1;border-top:1px solid var(--line);margin-top:6px;padding-top:14px}
-  .comments h3{font-size:13px;color:var(--txt);margin-bottom:10px}
-  .clist{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow:auto;margin-bottom:12px}
-  .citem{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
-  .cmeta{font-size:11px;color:var(--muted);margin-bottom:4px}
-  .cmeta b{color:var(--accent);font-weight:600}
-  .cbody{font-size:13px;white-space:pre-wrap;color:var(--txt)}
-  .cempty{color:var(--muted);font-size:12px;padding:6px 0}
-  .cadd{display:flex;gap:8px;align-items:flex-start}
-  .cadd textarea{flex:1;min-height:46px}
+  :root{
+    --asphalt:#1B2430;
+    --asphalt-2:#242F3E;
+    --parchment:#F3EEE3;
+    --parchment-2:#EAE2D2;
+    --ink:#24242B;
+    --ink-soft:#5B5A54;
+    --yellow:#F4B400;
+    --teal:#1F7A72;
+    --teal-soft:#E4EFEC;
+    --orange:#E15D2F;
+    --line:#D8CFB9;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--ink);
+    font-family:'Work Sans', -apple-system, sans-serif;
+    line-height:1.5;
+    padding-bottom:env(safe-area-inset-bottom);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Big Shoulders Display', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-weight:800;
+    margin:0;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:var(--teal);}
+
+  /* ---- Sticky trip bar ---- */
+  .tripbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--asphalt); color:#fff;
+    padding:10px 16px; padding-top:calc(10px + env(safe-area-inset-top));
+    border-bottom:3px solid var(--yellow);
+    font-family:'Big Shoulders Display', sans-serif;
+  }
+  .tripbar .name{font-size:15px; font-weight:800; letter-spacing:0.03em;}
+  .tripbar .cd{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--yellow); font-weight:600;}
+
+  /* ---- Hero ---- */
+  .hero{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(244,180,0,0.14), transparent 45%),
+      linear-gradient(180deg, var(--asphalt), var(--asphalt-2));
+    color:#fff;
+    padding:52px 20px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:10px;
+    background-image: repeating-linear-gradient(90deg, var(--yellow) 0 26px, transparent 26px 46px);
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:0.12em;
+    color:var(--yellow);
+    background:rgba(244,180,0,0.1);
+    border:1px solid rgba(244,180,0,0.35);
+    padding:5px 10px; border-radius:100px;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(42px, 12vw, 64px);
+    line-height:0.92;
+    margin-bottom:10px;
+  }
+  .hero h1 span{color:var(--yellow);}
+  .hero p.sub{
+    max-width:44ch; color:#C9CEDA; font-size:15.5px; margin-bottom:26px;
+  }
+  .statrow{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:1px; background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:var(--radius); overflow:hidden;
+    margin-bottom:24px;
+  }
+  .statrow div{background:var(--asphalt-2); padding:14px 10px; text-align:center;}
+  .statrow .num{font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:600; color:var(--yellow);}
+  .statrow .lbl{font-size:10.5px; color:#9AA2B2; text-transform:uppercase; letter-spacing:0.08em; margin-top:2px;}
+
+  .countdown{
+    display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .countdown .chip{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:10px; padding:10px 12px; min-width:62px; text-align:center;
+  }
+  .countdown .chip b{display:block; font-family:'JetBrains Mono',monospace; font-size:20px; color:#fff;}
+  .countdown .chip span{font-size:9.5px; color:#9AA2B2; text-transform:uppercase; letter-spacing:0.08em;}
+
+  .banana-tag{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    color:#1B2430; background:var(--yellow);
+    padding:6px 12px; border-radius:100px; font-weight:700;
+    transform:rotate(-1.5deg);
+    margin-bottom:16px;
+  }
+
+  .crew{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px;}
+  .crewchip{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    color:#fff; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.18);
+    padding:7px 12px; border-radius:100px;
+  }
+  .crewchip.wildcard{border-color:var(--orange); color:var(--yellow);}
+  .crewchip small{opacity:0.7; font-weight:400;}
+
+  /* ---- Quick nav ---- */
+  .quicknav{
+    display:flex; gap:8px; overflow-x:auto;
+    padding:14px 16px; background:var(--parchment);
+    border-bottom:1px solid var(--line);
+    -webkit-overflow-scrolling:touch;
+  }
+  .quicknav::-webkit-scrollbar{display:none;}
+  .quicknav a{
+    flex:0 0 auto;
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink); text-decoration:none;
+    background:#fff; border:1px solid var(--line); border-radius:100px;
+    padding:8px 14px;
+  }
+
+  section{padding:40px 18px;}
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.1em;
+    color:var(--teal); text-transform:uppercase; margin-bottom:6px; display:block; font-weight:600;
+  }
+  .sectitle{font-size:clamp(30px,8vw,40px); margin-bottom:6px;}
+  .secdesc{color:var(--ink-soft); max-width:52ch; margin-bottom:28px; font-size:15px;}
+
+  /* ---- Route timeline ---- */
+  .route{position:relative; padding-left:44px;}
+  .route::before{
+    content:"";
+    position:absolute; left:16px; top:6px; bottom:6px; width:4px;
+    background-image: repeating-linear-gradient(180deg, var(--yellow) 0 14px, transparent 14px 24px);
+    background-color:var(--teal);
+    border-radius:4px;
+  }
+  .stop{position:relative; margin-bottom:14px;}
+  .stop .shield{
+    position:absolute; left:-44px; top:14px;
+    width:34px; height:34px; border-radius:9px;
+    background:var(--teal); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:15px;
+    border:3px solid var(--parchment);
+    box-shadow:0 0 0 2px var(--teal);
+  }
+  .stop.buffer .shield{background:var(--ink-soft); box-shadow:0 0 0 2px var(--ink-soft);}
+  .stopcard{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .stopcard summary{
+    list-style:none; cursor:pointer;
+    padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .stopcard summary::-webkit-details-marker{display:none;}
+  .stopcard .datehead{display:flex; flex-direction:column;}
+  .stopcard .day{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;}
+  .stopcard .city{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:21px; text-transform:uppercase;}
+  .stopcard .drive{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--teal); font-weight:600;
+    background:var(--teal-soft); padding:5px 9px; border-radius:8px; white-space:nowrap;
+  }
+  .chevron{transition:transform .2s ease; color:var(--ink-soft); flex:0 0 auto;}
+  .stopcard[open] .chevron{transform:rotate(180deg);}
+  .stopbody{padding:0 16px 18px; border-top:1px solid var(--line);}
+  .stopbody p{margin:14px 0 0; font-size:14.5px; color:var(--ink);}
+  .stopbody .tip{
+    margin-top:12px; font-size:13px; color:var(--ink-soft);
+    background:var(--parchment-2); border-left:3px solid var(--yellow);
+    padding:8px 10px; border-radius:6px;
+  }
+  .nickname{
+    font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase;
+    letter-spacing:.05em; color:var(--orange); font-weight:700; margin-bottom:2px; display:block;
+  }
+  .maplink{
+    display:inline-flex; align-items:center; gap:6px; margin-top:12px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+    color:var(--teal); text-decoration:none;
+    background:var(--teal-soft); padding:8px 12px; border-radius:8px;
+  }
+  .mapwrap{
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    margin-bottom:14px; background:#fff;
+  }
+  .mapwrap iframe{display:block; width:100%; height:300px; border:0;}
+  .mapbtn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.03em; text-decoration:none;
+    background:var(--yellow); color:#1B2430;
+    padding:12px 18px; border-radius:100px; margin-bottom:28px;
+  }
+
+  /* ---- Camper card ---- */
+  .camperwrap{background:var(--asphalt); color:#fff;}
+  .camperwrap .kicker{color:var(--yellow);}
+  .camperwrap .secdesc{color:#B9C0CE;}
+  .campercard{
+    background:var(--asphalt-2); border:1px solid rgba(255,255,255,0.1);
+    border-radius:var(--radius); padding:20px;
+  }
+  .campertop{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px;}
+  .campertop h3{font-size:24px;}
+  .badge{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase;
+    background:var(--yellow); color:#1B2430; padding:4px 8px; border-radius:6px; font-weight:700;
+  }
+  .specs{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .specs span{
+    font-size:12px; font-family:'JetBrains Mono',monospace; color:#C9CEDA;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+    padding:6px 10px; border-radius:100px;
+  }
+  .priceline{display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; padding-top:16px; border-top:1px dashed rgba(255,255,255,0.16);}
+  .priceline .amount{font-family:'JetBrains Mono',monospace; font-size:26px; color:var(--yellow); font-weight:600;}
+  .priceline .sub{font-size:11.5px; color:#9AA2B2;}
+
+  /* ---- Budget ---- */
+  .toggle{
+    display:inline-flex; background:#fff; border:1px solid var(--line); border-radius:100px;
+    padding:3px; margin-bottom:20px;
+  }
+  .toggle button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.04em;
+    border:none; background:transparent; padding:8px 16px; border-radius:100px; cursor:pointer;
+    color:var(--ink-soft); font-weight:600;
+  }
+  .toggle button.active{background:var(--teal); color:#fff;}
+  .budgetlist{background:#fff; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  .budgetrow{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:14px 16px; border-bottom:1px solid var(--line); font-size:14.5px;
+  }
+  .budgetrow:last-child{border-bottom:none;}
+  .budgetrow .label{display:flex; flex-direction:column;}
+  .budgetrow .note{font-size:11.5px; color:var(--ink-soft);}
+  .budgetrow .val{font-family:'JetBrains Mono',monospace; font-weight:600; white-space:nowrap;}
+  .budgetrow.total{background:var(--teal-soft);}
+  .budgetrow.total .val{color:var(--teal); font-size:17px;}
+
+  /* ---- Packing list ---- */
+  .packgrid{display:flex; flex-direction:column; gap:18px;}
+  .packgroup h4{
+    font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-soft); margin-bottom:8px;
+  }
+  .packitem{
+    display:flex; align-items:center; gap:10px;
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:11px 13px; margin-bottom:6px; cursor:pointer; font-size:14.5px;
+    user-select:none;
+  }
+  .packitem input{accent-color:var(--teal); width:17px; height:17px; flex:0 0 auto;}
+  .packitem.checked{color:var(--ink-soft); text-decoration:line-through; background:var(--parchment-2);}
+  .packprogress{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--teal); margin-bottom:14px;}
+
+  /* ---- Tips ---- */
+  .tipsgrid{display:flex; flex-direction:column; gap:10px;}
+  .tipcard{
+    background:#fff; border:1px solid var(--line); border-left:4px solid var(--orange);
+    border-radius:10px; padding:13px 15px; font-size:14px;
+  }
+  .tipcard b{display:block; font-family:'Big Shoulders Display',sans-serif; font-size:15px; text-transform:uppercase; margin-bottom:3px;}
+
+  footer{
+    padding:30px 18px 40px; text-align:center; color:var(--ink-soft); font-size:12.5px;
+    background:var(--parchment-2);
+  }
+  footer .a2hs{
+    max-width:340px; margin:0 auto 18px; background:#fff; border:1px solid var(--line);
+    border-radius:var(--radius); padding:14px; font-size:13px; color:var(--ink);
+  }
+  footer .a2hs b{display:block; font-family:'Big Shoulders Display',sans-serif; font-size:15px; margin-bottom:4px;}
+
+  @media(min-width:640px){
+    section{padding:56px 40px;}
+    .hero{padding:64px 40px 48px;}
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>Incident <span>Tracker</span></h1>
-  <div class="bar">
-    <span class="who" id="who"></span>
-    <button id="users-btn" class="ghost" style="display:none" onclick="openUsers()">Users</button>
-    <button class="export" onclick="location.href='/api/export'">Export to Excel</button>
-    <button id="new-btn" onclick="openModal()" style="display:none">+ New incident</button>
-    <button class="ghost" onclick="logout()">Sign out</button>
+
+<div class="tripbar">
+  <span class="name">SHABAB LOOP</span>
+  <span class="cd mono" id="barCountdown">—</span>
+</div>
+
+<header class="hero">
+  <span class="eyebrow">● UGE 31 · 27 JUL–3 AUG 2026</span>
+  <h1>Shabab Loop<br>Around<br><span>Europa.</span></h1>
+  <span class="banana-tag">🍌 Joshua laver planer som en banan</span>
+  <p class="sub">Hamburg → Berlin → Prag → Nürnberg → Paris → Amsterdam → Hamburg. 2.400 km, fire (måske fem) mand, én camper. Highlights-tour, ikke afslapning.</p>
+
+  <div class="crew">
+    <span class="crewchip">🕶️ Youssef</span>
+    <span class="crewchip">🎮 Musti</span>
+    <span class="crewchip">🧢 LJ</span>
+    <span class="crewchip wildcard">👻 Josh <small>(hvis han tager sig sammen)</small></span>
+  </div>
+
+  <div class="statrow">
+    <div><div class="num">7</div><div class="lbl">Dage</div></div>
+    <div><div class="num">5</div><div class="lbl">Byer</div></div>
+    <div><div class="num">~6.2k</div><div class="lbl">Kr/pers</div></div>
+  </div>
+
+  <div class="countdown" id="countdown">
+    <div class="chip"><b id="cdDays">–</b><span>Dage</span></div>
+    <div class="chip"><b id="cdHours">–</b><span>Timer</span></div>
+    <div class="chip"><b id="cdMins">–</b><span>Min</span></div>
+    <div class="chip"><b id="cdSecs">–</b><span>Sek</span></div>
   </div>
 </header>
-<div class="tabs">
-  <button class="tab active" id="tab-list" onclick="showTab('list')">Incidents</button>
-  <button class="tab" id="tab-dash" onclick="showTab('dash')">Dashboard</button>
-</div>
-<main>
-  <div id="view-dash" style="display:none">
-    <div class="dash-grid">
-      <div class="dash-card" onclick="goToPrio('1-critical')">
-        <div class="dash-head dh-p1">Active P1 incidents</div>
-        <div class="dash-num" id="dn-p1">0</div>
-        <div class="dash-sub">click to view</div>
-      </div>
-      <div class="dash-card" onclick="goToPrio('2-high priority')">
-        <div class="dash-head dh-p2">Active P2 incidents</div>
-        <div class="dash-num" id="dn-p2">0</div>
-        <div class="dash-sub">click to view</div>
-      </div>
-      <div class="dash-card" onclick="goToPrio('3-medium priority')">
-        <div class="dash-head dh-p3">Active P3 incidents</div>
-        <div class="dash-num" id="dn-p3">0</div>
-        <div class="dash-sub">click to view</div>
-      </div>
-      <div class="dash-card" onclick="goToPrio('4-low priority')">
-        <div class="dash-head dh-p4">Active P4 incidents</div>
-        <div class="dash-num" id="dn-p4">0</div>
-        <div class="dash-sub">click to view</div>
-      </div>
-    </div>
-  </div>
-  <div id="view-list">
-  <div class="filters">
-    <input id="f-q" placeholder="Search INC nr, name, system..." oninput="load()">
-    <select id="f-status" onchange="load()">
-      <option value="">All statuses</option>
-      <option>New</option><option>Assigned</option><option>Pending</option>
-      <option>Ongoing</option><option>Resolved</option><option>Closed</option>
-    </select>
-    <select id="f-prio" onchange="load()">
-      <option value="">All priorities</option>
-      <option>1-critical</option><option>2-high priority</option>
-      <option>3-medium priority</option><option>4-low priority</option>
-    </select>
-    <select id="f-escalated" onchange="load()">
-      <option value="">All (escalated)</option>
-      <option value="1">Escalated: Yes</option>
-      <option value="0">Escalated: No</option>
-    </select>
-    <button class="ghost" onclick="clearFilters()">Reset</button>
-  </div>
-  <table>
-    <thead><tr>
-      <th>Status</th><th>INC nr</th><th>Prio</th><th>Name</th><th>System</th>
-      <th>Market</th><th>Esc.</th><th>Start</th><th>Comment</th><th>Actions</th><th></th>
-    </tr></thead>
-    <tbody id="tbody"></tbody>
-  </table>
-  <div id="empty" class="empty" style="display:none">No incidents found.</div>
-  </div>
-</main>
-<div class="foot">Internal tool. Not an official Nexi system.</div>
 
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <h2 id="modal-title">New incident</h2>
-    <input type="hidden" id="m-id">
-    <div class="grid">
-      <label>Status<select id="m-status">
-        <option>New</option><option>Assigned</option><option>Pending</option>
-        <option>Ongoing</option><option>Resolved</option><option>Closed</option>
-      </select></label>
-      <label>INC nr<input id="m-inc"></label>
-      <label>Priority<select id="m-prio">
-        <option value="">(none)</option>
-        <option>1-critical</option><option>2-high priority</option>
-        <option>3-medium priority</option><option>4-low priority</option>
-      </select></label>
-      <label>System<input id="m-system"></label>
-      <label class="full">Name<input id="m-name"></label>
-      <label class="full">Market<div class="market-box" id="m-market">
-        <label><input type="checkbox" value="DK">DK</label>
-        <label><input type="checkbox" value="SE">SE</label>
-        <label><input type="checkbox" value="NO">NO</label>
-        <label><input type="checkbox" value="FI">FI</label>
-        <label><input type="checkbox" value="Nordic">Nordic</label>
-        <label><input type="checkbox" value="Krakow">Krakow</label>
-      </div></label>
-      <label>Start date<input type="date" id="m-date"></label>
-      <label>Escalated<select id="m-escalated" onchange="toggleEsc()">
-        <option value="0">No</option>
-        <option value="1">Yes</option>
-      </select></label>
-      <label class="full" id="m-esc-details-wrap" style="display:none">Escalation details &mdash; how was it escalated?
-        <textarea id="m-esc-details" placeholder="e.g. escalated to Nets L3 at 14:20 via PagerDuty"></textarea></label>
-      <label class="full">Comment<textarea id="m-comment"></textarea></label>
-      <label class="full">Actions<textarea id="m-actions"></textarea></label>
+<nav class="quicknav">
+  <a href="#rute">Rute</a>
+  <a href="#camper">Camper</a>
+  <a href="#budget">Budget</a>
+  <a href="#pakke">Pakkeliste</a>
+  <a href="#tips">Tips</a>
+</nav>
 
-      <div class="comments" id="m-comments-box" style="display:none">
-        <h3>Comment log</h3>
-        <div class="clist" id="m-clist"></div>
-        <div class="cadd">
-          <textarea id="m-newcomment" placeholder="Write a comment..."></textarea>
-          <button type="button" onclick="addComment()">Add comment</button>
+<section id="rute">
+  <span class="kicker">Dag for dag</span>
+  <h2 class="sectitle">Ruten</h2>
+  <p class="secdesc">Tryk på en etape for detaljer, eller se hele loopet tegnet op på kortet. Fire køredage, én mellemstation, og to hele bydage.</p>
+
+  <div class="mapwrap">
+    <iframe
+      src="https://www.google.com/maps?saddr=Hamburg,+Germany&daddr=Berlin,+Germany+to:Prague,+Czechia+to:N%C3%BCrnberg,+Germany+to:Paris,+France+to:Amsterdam,+Netherlands+to:Hamburg,+Germany&output=embed"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Shabab Loop rute"></iframe>
+  </div>
+  <a class="mapbtn" href="https://www.google.com/maps/dir/Hamburg,+Germany/Berlin,+Germany/Prague,+Czechia/N%C3%BCrnberg,+Germany/Paris,+France/Amsterdam,+Netherlands/Hamburg,+Germany" target="_blank" rel="noopener">🗺️ Åbn hele loopet i Google Maps</a>
+
+  <div class="route">
+
+    <details class="stop" open>
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Opvarmningsrunden</span>
+          <span class="day">Man 27/7 · Dag 1</span>
+          <span class="city">Hamburg → Berlin</span>
         </div>
+        <span class="drive mono">290 KM · 3T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Afhentning af camperen i Hamburg om formiddagen. Pak bilen, kort indkøb, og kør sydøst mod Berlin. Tjek ind på Stellplatz og brug aftenen i Kreuzberg eller Mitte.</p>
+        <div class="tip">Book Stellplatz i Berlin i god tid, august er højsæson.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Hamburg,Germany&destination=Berlin,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Shabab Unlocked: Level 2</span>
+          <span class="day">Tir 28/7 · Dag 2</span>
+          <span class="city">Berlin → Prag</span>
+        </div>
+        <span class="drive mono">350 KM · 4T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Formiddag med Brandenburger Tor og East Side Gallery, afgang omkring frokost. Ankomst i Prag sidst på eftermiddagen, aftentur over Karlsbroen.</p>
+        <div class="tip">Tjekkiet kræver e-vignet til motorvejene, køb online inden grænsen.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Berlin,Germany&destination=Prague,Czechia&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Den ingen har hørt om</span>
+          <span class="day">Ons 29/7 · Dag 3</span>
+          <span class="city">Prag → Nürnberg</span>
+        </div>
+        <span class="drive mono">380 KM · 4T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Formiddag ved Prags slot og den gamle bydel. Kør vestpå mod Tyskland igen, overnatning på Stellplatz i Nürnberg-området med aftenmad i altstadt.</p>
+        <div class="tip">Mellemstationen er nødvendig: Prag–Paris i ét hug er 890 km og for langt til en camper-dag.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Prague,Czechia&destination=N%C3%BCrnberg,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Maratonetappen</span>
+          <span class="day">Tor 30/7 · Dag 4</span>
+          <span class="city">Nürnberg → Paris</span>
+        </div>
+        <span class="drive mono">500 KM · 5T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Den lange køredag. Skift til at køre undervejs. Ankomst i Paris sen eftermiddag, tjek ind på campingplads i udkanten og tag offentlig transport ind til centrum.</p>
+        <div class="tip">Kør ikke selv ind i centrum af Paris med camperen, brug park &amp; ride.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=N%C3%BCrnberg,Germany&destination=Paris,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Selfie & baguette-dagen</span>
+          <span class="day">Fre 31/7 · Dag 5</span>
+          <span class="city">Paris</span>
+        </div>
+        <span class="drive mono">0 KM · HELDAG</span>
+      </summary>
+      <div class="stopbody">
+        <p>Jeres eneste rene bydag. Eiffeltårnet, en gåtur langs Seinen, og Montmartre om aftenen.</p>
+        <div class="tip">Frankrig har betalingsmotorveje (péage), husk kontant/kort i camperen på turen videre.</div>
+        <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=Paris,France" target="_blank" rel="noopener">📍 Se Paris i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Sidste spurt nord</span>
+          <span class="day">Lør 1/8 · Dag 6</span>
+          <span class="city">Paris → Amsterdam</span>
+        </div>
+        <span class="drive mono">430 KM · 5T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Formiddag i Paris, afgang mod nord. Ankomst i Amsterdam om aftenen, gåtur eller kanaltur i mørket.</p>
+        <div class="tip">Ligesom Paris: parkér camperen i udkanten og tag tog/bus ind til centrum.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Paris,France&destination=Amsterdam,Netherlands&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Hjem til mor</span>
+          <span class="day">Søn 2/8 · Dag 7</span>
+          <span class="city">Amsterdam → Hamburg</span>
+        </div>
+        <span class="drive mono">450 KM · 5T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Formiddag i Jordaan eller Vondelpark. Afgang tidlig eftermiddag, aflevering af camperen i Hamburg om aftenen.</p>
+        <div class="tip">Tjek afleveringstidspunkt og evt. rengøringskrav inden I kører de sidste km.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Amsterdam,Netherlands&destination=Hamburg,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop buffer">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Josh's sikkerhedsnet</span>
+          <span class="day">Man 3/8 · Buffer</span>
+          <span class="city">Hjemrejse</span>
+        </div>
+        <span class="drive mono">RESERVE</span>
+      </summary>
+      <div class="stopbody">
+        <p>Ingen faste planer, brug dagen hvis I bliver forsinkede undervejs, eller som en ekstra nats søvn før hjemrejsen. Officielt til uforudsete forsinkelser, uofficielt fordi Josh nok kommer for sent til afgang.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<section id="camper" class="camperwrap">
+  <span class="kicker">Køretøjet</span>
+  <h2 class="sectitle">Camperen</h2>
+  <p class="secdesc">Comfort Space Select fra Indie Campers, afhentes og afleveres i Hamburg.</p>
+
+  <div class="campercard">
+    <div class="campertop">
+      <div>
+        <span class="badge">−40% TILBUD</span>
+        <h3>Comfort Space Select</h3>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="ghost" onclick="closeModal()">Cancel</button>
-      <button onclick="save()">Save</button>
+    <div class="specs">
+      <span>4 personer</span>
+      <span>4 senge</span>
+      <span>Automatgear</span>
+      <span>Bad &amp; toilet</span>
+      <span>Privat soveafdeling</span>
+      <span>★ 4.9 (500+)</span>
+    </div>
+    <p style="font-size:13px; color:#9AA2B2; margin:0;">Afhentning: Hamburg Helmut Schmidt Airport</p>
+    <div class="priceline">
+      <div>
+        <div class="amount">€1.488</div>
+        <div class="sub">i alt for 7 dage · alle 4 rejsende</div>
+      </div>
+      <div class="sub" style="text-align:right;">≈ €212/dag<br>≈ 1.665 kr</div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="overlay" id="users-overlay">
-  <div class="modal">
-    <h2>Users</h2>
-    <div style="display:flex;gap:8px;margin:10px 0 16px;flex-wrap:wrap">
-      <input id="nu-email" placeholder="new.user@nexigroup.com" style="flex:1;min-width:220px">
-      <select id="nu-role">
-        <option value="manager">manager</option>
-        <option value="editor">editor</option>
-        <option value="read">read</option>
-      </select>
-      <button onclick="addUser()">Add</button>
-    </div>
-    <div id="users-list"></div>
-    <div class="modal-actions">
-      <button class="ghost" onclick="closeUsers()">Close</button>
-    </div>
+<section id="budget">
+  <span class="kicker">Hvad koster det</span>
+  <h2 class="sectitle">Budget</h2>
+  <p class="secdesc">Estimat for hele turen. Skift mellem gruppe og per person.</p>
+
+  <div class="toggle">
+    <button id="btnGroup" class="active">Gruppe</button>
+    <button id="btnPerson">Per person</button>
   </div>
-</div>
+
+  <div class="budgetlist" id="budgetList"></div>
+</section>
+
+<section id="pakke">
+  <span class="kicker">Inden afgang</span>
+  <h2 class="sectitle">Pakkeliste</h2>
+  <p class="secdesc">Trykkes af, gemmes automatisk på jeres telefon.</p>
+
+  <div class="packprogress" id="packProgress">0 / 0 pakket</div>
+  <div class="packgrid" id="packGrid"></div>
+</section>
+
+<section id="tips">
+  <span class="kicker">God at vide</span>
+  <h2 class="sectitle">Praktiske tips</h2>
+  <div class="tipsgrid">
+    <div class="tipcard"><b>Vignetter</b>Tjekkiet: e-vignet online inden grænsen. Frankrig: betalingsmotorveje undervejs, hav kort/kontant klar.</div>
+    <div class="tipcard"><b>Stellplätze bookes tidligt</b>August er højsæson i alle fem byer. Book Berlin, Prag, Nürnberg, Paris og Amsterdam i god tid.</div>
+    <div class="tipcard"><b>Byerne kører I ikke ind i</b>Paris og Amsterdam: parkér camperen i udkanten og brug offentlig transport ind til centrum.</div>
+    <div class="tipcard"><b>Depositum</b>Tjek om kaution/forsikring er inkluderet i de €1.488, det er den ofte ikke.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="a2hs">
+    <b>Gem på hjemmeskærmen</b>
+    Del-ikonet nederst i Safari → "Føj til hjemmeskærm". Så ligger turen ét tryk væk hele ugen.
+  </div>
+  Shabab Loop Around Europa · Uge 31, 2026
+</footer>
 
 <script>
-const $ = id => document.getElementById(id);
-const esc = s => (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let ME = null;
-
-async function init(){
-  const r = await fetch('/api/me');
-  if(!r.ok){ location.href='/login.html'; return; }
-  ME = await r.json();
-  $('who').innerHTML = '<b>'+esc(ME.email)+'</b> <em>'+ME.role+'</em>';
-  if(ME.role === 'admin') $('users-btn').style.display='';
-  if(ME.role !== 'read') $('new-btn').style.display='';
-  load();
-}
-async function logout(){ await fetch('/api/logout',{method:'POST'}); location.href='/login.html'; }
-
-function showTab(which){
-  $('view-list').style.display = which==='list' ? '' : 'none';
-  $('view-dash').style.display = which==='dash' ? '' : 'none';
-  $('tab-list').classList.toggle('active', which==='list');
-  $('tab-dash').classList.toggle('active', which==='dash');
-  if(which==='dash') loadDash();
-}
-
-const PRIOS = {'1-critical':'p1','2-high priority':'p2','3-medium priority':'p3','4-low priority':'p4'};
-async function loadDash(){
-  const r = await fetch('/api/incidents');
-  if(!r.ok){ location.href='/login.html'; return; }
-  const rows = await r.json();
-  const counts = {p1:0,p2:0,p3:0,p4:0};
-  rows.forEach(row=>{
-    if(row.status==='Resolved'||row.status==='Closed') return;
-    const key = PRIOS[row.prio];
-    if(key) counts[key]++;
-  });
-  for(const [prio,key] of Object.entries(PRIOS)){
-    const numEl = $('dn-'+key);
-    const cardEl = numEl.closest('.dash-card');
-    numEl.textContent = counts[key];
-    cardEl.classList.toggle('blink-'+key, counts[key] > 0);
-  }
-}
-
-function goToPrio(prio){
-  showTab('list');
-  $('f-q').value='';
-  $('f-status').value='';
-  $('f-escalated').value='';
-  $('f-prio').value=prio;
-  load();
-}
-setInterval(()=>{ if($('view-dash').style.display!=='none') loadDash(); }, 15000);
-
-async function load(){
-  const p = new URLSearchParams();
-  if($('f-q').value) p.set('q',$('f-q').value);
-  if($('f-status').value) p.set('status',$('f-status').value);
-  if($('f-prio').value) p.set('prio',$('f-prio').value);
-  if($('f-escalated').value) p.set('escalated',$('f-escalated').value);
-  const r = await fetch('/api/incidents?'+p);
-  if(!r.ok){ location.href='/login.html'; return; }
-  const rows = await r.json();
-  const tb = $('tbody'); tb.innerHTML='';
-  $('empty').style.display = rows.length ? 'none':'block';
-  const canEdit = ME.role !== 'read';
-  const canDel = ME.role === 'admin';
-  rows.forEach(row=>{
-    const pclass = row.prio ? 'p'+row.prio[0] : '';
-    const tr = document.createElement('tr');
-    let actions = '';
-    if(canEdit) actions += '<button class="ghost" onclick=\'edit('+JSON.stringify(row).replace(/'/g,"&#39;")+')\'>edit</button>';
-    if(canDel) actions += '<button class="del" onclick="del('+row.id+')">delete</button>';
-    tr.innerHTML =
-      '<td><span class="pill s-'+row.status+'">'+row.status+'</span></td>'+
-      '<td>'+esc(row.inc_nr)+'</td>'+
-      '<td class="'+pclass+'">'+esc(row.prio)+'</td>'+
-      '<td>'+esc(row.name)+'</td>'+
-      '<td>'+esc(row.sys_name)+'</td>'+
-      '<td>'+esc(row.market)+'</td>'+
-      '<td>'+(row.escalated ? '<span class="esc-badge esc-yes">Yes</span>' : '<span class="esc-badge esc-no">No</span>')+'</td>'+
-      '<td>'+(row.start_date?row.start_date.slice(0,10).split('-').reverse().join('.'):'')+'</td>'+
-      '<td class="cell-txt">'+snip(row.comment,row.id,'c')+'</td>'+
-      '<td class="cell-txt">'+snip(row.actions,row.id,'a')+'</td>'+
-      '<td><div class="row-actions">'+actions+'</div></td>';
-    tb.appendChild(tr);
-  });
-}
-const ROWS = {};
-function snip(text,id,kind){
-  const t = (text||'').toString();
-  const key = kind+id;
-  ROWS[key] = t;
-  if(t.length <= 90) return esc(t);
-  return '<span id="cell-'+key+'">'+collapsed(key)+'</span>';
-}
-function collapsed(key){
-  const t = ROWS[key];
-  return '<span class="cell-snip">'+esc(t.slice(0,90))+'\u2026</span> '+
-    '<button class="viewmore" onclick="toggleView(\''+key+'\',true)">view more</button>';
-}
-function expanded(key){
-  return '<div style="white-space:pre-wrap">'+esc(ROWS[key])+'</div>'+
-    '<button class="viewmore" onclick="toggleView(\''+key+'\',false)">view less</button>';
-}
-function toggleView(key,expand){
-  document.getElementById('cell-'+key).innerHTML = expand ? expanded(key) : collapsed(key);
-}
-function openModal(){
-  $('modal-title').textContent='New incident';
-  $('m-id').value='';$('m-status').value='New';$('m-inc').value='';
-  $('m-prio').value='';$('m-system').value='';$('m-name').value='';
-  $('m-date').value='';$('m-comment').value='';$('m-actions').value='';
-  $('m-escalated').value='0';$('m-esc-details').value='';toggleEsc();
-  $('m-comments-box').style.display='none';
-  document.querySelectorAll('#m-market input').forEach(c=>c.checked=false);
-  $('overlay').classList.add('show');
-}
-function toggleEsc(){
-  $('m-esc-details-wrap').style.display = $('m-escalated').value==='1' ? 'flex' : 'none';
-}
-function closeModal(){ $('overlay').classList.remove('show'); }
-function edit(r){
-  openModal();
-  $('modal-title').textContent='Edit incident';
-  $('m-id').value=r.id;$('m-status').value=r.status;$('m-inc').value=r.inc_nr;
-  $('m-prio').value=r.prio||'';$('m-system').value=r.sys_name||'';$('m-name').value=r.name;
-  $('m-date').value=r.start_date?r.start_date.slice(0,10):'';
-  $('m-comment').value=r.comment||'';$('m-actions').value=r.actions||'';
-  $('m-escalated').value=r.escalated?'1':'0';
-  $('m-esc-details').value=r.escalation_details||'';
-  toggleEsc();
-  const mk=(r.market||'').split(',');
-  document.querySelectorAll('#m-market input').forEach(c=>c.checked=mk.includes(c.value));
-  $('m-comments-box').style.display='';
-  loadComments(r.id);
-}
-async function loadComments(id){
-  const list = $('m-clist');
-  list.innerHTML = '<div class="cempty">Loading...</div>';
-  const r = await fetch('/api/incidents/'+id+'/comments');
-  if(!r.ok){ list.innerHTML='<div class="cempty">Could not load comments.</div>'; return; }
-  const rows = await r.json();
-  if(!rows.length){ list.innerHTML='<div class="cempty">No comments yet.</div>'; return; }
-  list.innerHTML = rows.map(c=>{
-    const d = new Date(c.created_at).toLocaleString('da-DK',{dateStyle:'short',timeStyle:'short'});
-    return '<div class="citem"><div class="cmeta"><b>'+esc(c.author)+'</b> &middot; '+d+'</div>'+
-      '<div class="cbody">'+esc(c.body)+'</div></div>';
-  }).join('');
-}
-async function addComment(){
-  const id = $('m-id').value;
-  if(!id) return;
-  const body = $('m-newcomment').value.trim();
-  if(!body) return;
-  const r = await fetch('/api/incidents/'+id+'/comments',{method:'POST',
-    headers:{'Content-Type':'application/json'},body:JSON.stringify({body})});
-  if(!r.ok){ const d=await r.json(); alert(d.error||'Could not save comment'); return; }
-  $('m-newcomment').value='';
-  loadComments(id);
-}
-async function save(){
-  const market=[...document.querySelectorAll('#m-market input:checked')].map(c=>c.value);
-  const body={status:$('m-status').value, inc_nr:$('m-inc').value, prio:$('m-prio').value||null,
-    name:$('m-name').value, sys_name:$('m-system').value, market,
-    start_date:$('m-date').value||null, comment:$('m-comment').value, actions:$('m-actions').value,
-    escalated:$('m-escalated').value==='1', escalation_details:$('m-esc-details').value};
-  if(!body.inc_nr||!body.name){ alert('INC nr and Name are required'); return; }
-  const id=$('m-id').value;
-  await fetch('/api/incidents'+(id?'/'+id:''),{
-    method:id?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
-  closeModal(); load();
-}
-async function del(id){
-  if(!confirm('Delete this incident?')) return;
-  await fetch('/api/incidents/'+id,{method:'DELETE'}); load();
-}
-function clearFilters(){ $('f-q').value='';$('f-status').value='';$('f-prio').value='';$('f-escalated').value='';load(); }
-
-async function addUser(){
-  const e = $('nu-email').value.trim();
-  const r = $('nu-role').value;
-  if(!e){ alert('Email is required'); return; }
-  const x = await fetch('/api/users',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({email:e,role:r})});
-  if(x.ok){ $('nu-email').value=''; openUsers(); }
-  else{ const d=await x.json(); alert(d.error||'Error'); }
-}
-
-let pendingRoleChanges = {};
-
-async function openUsers(){
-  pendingRoleChanges = {};
-  document.getElementById('users-overlay').classList.add('show');
-  const r = await fetch('/api/users');
-  const rows = await r.json();
-  const html = ['<table class="userlist"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>'];
-  rows.forEach(u=>{
-    const status = u.has_password ? 'Active' : (u.setup_token ? 'Link generated' : 'No password yet');
-    let roleCell;
-    if(u.role === 'admin'){
-      roleCell = '<span class="badge r-admin">admin</span>';
-    } else {
-      roleCell = '<select data-uid="'+u.id+'" data-orig="'+u.role+'" onchange="trackRoleChange('+u.id+',this)">'+
-        ['editor','manager','read'].map(r=>'<option value="'+r+'"'+(r===u.role?' selected':'')+'>'+r+'</option>').join('')+
-        '</select>';
+  // ---- Countdown ----
+  const target = new Date("2026-07-27T10:00:00+02:00").getTime();
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function tick(){
+    const now = Date.now();
+    let diff = target - now;
+    const bar = document.getElementById('barCountdown');
+    if(diff <= 0){
+      document.getElementById('cdDays').textContent = '00';
+      document.getElementById('cdHours').textContent = '00';
+      document.getElementById('cdMins').textContent = '00';
+      document.getElementById('cdSecs').textContent = '00';
+      bar.textContent = 'PÅ TUR';
+      return;
     }
-    html.push('<tr><td>'+esc(u.email)+'</td>'+
-      '<td>'+roleCell+'</td>'+
-      '<td>'+status+'</td>'+
-      '<td>'+(u.role!=='admin' ? '<button class="ghost" onclick="genLink('+u.id+')">Generate link</button>' : '')+'</td></tr>');
+    const d = Math.floor(diff/86400000); diff -= d*86400000;
+    const h = Math.floor(diff/3600000); diff -= h*3600000;
+    const m = Math.floor(diff/60000); diff -= m*60000;
+    const s = Math.floor(diff/1000);
+    document.getElementById('cdDays').textContent = d;
+    document.getElementById('cdHours').textContent = pad(h);
+    document.getElementById('cdMins').textContent = pad(m);
+    document.getElementById('cdSecs').textContent = pad(s);
+    bar.textContent = d + 'd ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---- Budget data ----
+  const budget = [
+    {label:'Camper (7 dage, tilbud)', note:'Comfort Space Select, Indie Campers', group:1488},
+    {label:'Brændstof', note:'~2.400 km, diesel', group:450},
+    {label:'Overnatning', note:'6 nætter, Stellplätze/camping', group:200},
+    {label:'Vejafgifter', note:'Tjekkiet + Frankrig', group:115},
+    {label:'Mad', note:'4 pers × 7 dage', group:560},
+    {label:'Byoplevelser', note:'Entré, museer, transport', group:500},
+  ];
+  const FX = 7.46;
+  function renderBudget(mode){
+    const el = document.getElementById('budgetList');
+    const div = mode === 'person' ? 4 : 1;
+    let total = 0;
+    let html = '';
+    budget.forEach(row => {
+      const eur = row.group / div;
+      total += eur;
+      html += `<div class="budgetrow">
+        <div class="label"><span>${row.label}</span><span class="note">${row.note}</span></div>
+        <div class="val">€${Math.round(eur)}<br><span style="font-weight:400;color:var(--ink-soft);font-size:11.5px;">${Math.round(eur*FX).toLocaleString('da-DK')} kr</span></div>
+      </div>`;
+    });
+    html += `<div class="budgetrow total">
+      <div class="label"><span>I alt${mode==='person' ? ' · per person' : ' · hele gruppen'}</span></div>
+      <div class="val">€${Math.round(total)}<br><span style="font-weight:600;font-size:11.5px;">${Math.round(total*FX).toLocaleString('da-DK')} kr</span></div>
+    </div>`;
+    el.innerHTML = html;
+  }
+  renderBudget('group');
+  document.getElementById('btnGroup').addEventListener('click', function(){
+    this.classList.add('active');
+    document.getElementById('btnPerson').classList.remove('active');
+    renderBudget('group');
   });
-  html.push('</tbody></table>');
-  html.push('<div id="role-save-bar" style="display:none;margin-top:14px;padding:12px;background:var(--panel2);border:1px solid var(--accent);border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:12px">');
-  html.push('<span id="role-save-msg" style="font-size:13px;color:var(--txt)"></span>');
-  html.push('<button onclick="saveRoleChanges()">Save changes</button>');
-  html.push('</div>');
-  document.getElementById('users-list').innerHTML = html.join('');
-}
+  document.getElementById('btnPerson').addEventListener('click', function(){
+    this.classList.add('active');
+    document.getElementById('btnGroup').classList.remove('active');
+    renderBudget('person');
+  });
 
-function trackRoleChange(id, sel){
-  const orig = sel.getAttribute('data-orig');
-  if(sel.value === orig){
-    delete pendingRoleChanges[id];
-  } else {
-    pendingRoleChanges[id] = sel.value;
-  }
-  updateSaveBar();
-}
-
-function updateSaveBar(){
-  const n = Object.keys(pendingRoleChanges).length;
-  const bar = document.getElementById('role-save-bar');
-  if(!bar) return;
-  if(n === 0){ bar.style.display='none'; return; }
-  bar.style.display='flex';
-  document.getElementById('role-save-msg').textContent =
-    n + ' role change' + (n===1?'':'s') + ' pending. Affected users will be signed out.';
-}
-
-async function saveRoleChanges(){
-  const changes = Object.entries(pendingRoleChanges).map(([id,role])=>({id:parseInt(id),role}));
-  if(!changes.length) return;
-  const r = await fetch('/api/users/roles',{method:'PUT',
-    headers:{'Content-Type':'application/json'},body:JSON.stringify({changes})});
-  if(r.ok){
-    pendingRoleChanges = {};
-    openUsers();
-  } else {
-    const d = await r.json();
-    alert(d.error||'Error');
-  }
-}
-
-function closeUsers(){ document.getElementById('users-overlay').classList.remove('show'); }
-
-
-
-async function genLink(id){
-  const r = await fetch('/api/users/'+id+'/setup-link',{method:'POST'});
-  const d = await r.json();
-  const url = location.origin + d.url;
-  let copied = false;
-  try { await navigator.clipboard.writeText(url); copied = true; } catch(e){}
-  showLinkModal(url, copied);
-}
-function showLinkModal(url, copied){
-  const ov = document.createElement('div');
-  ov.className = 'overlay show';
-  ov.style.zIndex = 20;
-  const msg = copied
-    ? 'The link has been copied to your clipboard. Paste it in Slack to the user.'
-    : 'Copy the link below and send it to the user via Slack.';
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-  modal.style.maxWidth = '560px';
-  modal.innerHTML = '<h2>Setup link ready</h2>'+
-    '<p style="color:var(--muted);font-size:13px;margin-bottom:12px">'+msg+' Valid for 7 days.</p>'+
-    '<div class="linkbox" id="linkval">'+esc(url)+'</div>'+
-    '<div class="modal-actions">'+
-    '<button class="ghost" id="lm-close">Close</button>'+
-    '<button id="lm-copy">Copy again</button>'+
-    '</div>';
-  ov.appendChild(modal);
-  document.body.appendChild(ov);
-  document.getElementById('lm-close').onclick = () => ov.remove();
-  document.getElementById('lm-copy').onclick = async (e) => {
-    await navigator.clipboard.writeText(url);
-    e.target.textContent = 'Copied';
-    setTimeout(() => { e.target.textContent = 'Copy again'; }, 1500);
+  // ---- Packing list ----
+  const packing = {
+    'Papirer & penge': ['Pas / ID', 'Kørekort', 'EU-sygesikringskort', 'Rejseforsikring', 'Kontanter (EUR + CZK)'],
+    'Camperen': ['CEE-strømadapter', 'Forlængerledning', 'Drikkevandsslange', 'Kemisk toilet-væske', 'Offline kort (app)'],
+    'Tøj & udstyr': ['Regnjakke', 'Gode gåsko', 'Badetøj'],
+    'Andet': ['Powerbank', 'Universal stikadapter', 'Kortspil / playlist']
   };
-}
-init();
+  const grid = document.getElementById('packGrid');
+  let allItems = [];
+  Object.entries(packing).forEach(([group, items]) => {
+    const g = document.createElement('div');
+    g.className = 'packgroup';
+    g.innerHTML = `<h4>${group}</h4>`;
+    items.forEach(item => {
+      const id = 'pk_' + item.replace(/[^a-zA-Z0-9]/g,'_');
+      allItems.push(id);
+      const row = document.createElement('label');
+      row.className = 'packitem';
+      row.id = 'row_' + id;
+      row.innerHTML = `<input type="checkbox" id="${id}"> <span>${item}</span>`;
+      g.appendChild(row);
+    });
+    grid.appendChild(g);
+  });
+
+  function updateProgress(){
+    const checked = allItems.filter(id => document.getElementById(id).checked).length;
+    document.getElementById('packProgress').textContent = checked + ' / ' + allItems.length + ' pakket';
+  }
+
+  allItems.forEach(id => {
+    const saved = localStorage.getItem(id) === '1';
+    const cb = document.getElementById(id);
+    cb.checked = saved;
+    if(saved) document.getElementById('row_' + id).classList.add('checked');
+    cb.addEventListener('change', function(){
+      localStorage.setItem(id, this.checked ? '1' : '0');
+      document.getElementById('row_' + id).classList.toggle('checked', this.checked);
+      updateProgress();
+    });
+  });
+  updateProgress();
 </script>
+
 </body>
 </html>
