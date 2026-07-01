@@ -225,6 +225,24 @@
     padding:12px 18px; border-radius:100px; margin-bottom:28px;
   }
 
+  /* ---- Parking ---- */
+  .parklist{display:flex; flex-direction:column; gap:10px;}
+  .parkcard{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:15px 16px;
+  }
+  .parktop{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:6px;}
+  .parktop .pcity{font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); font-weight:700; display:block; margin-bottom:2px;}
+  .parktop .pname{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:19px; text-transform:uppercase;}
+  .parktop .pprice{
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--orange);
+    background:#FCEDE6; padding:5px 9px; border-radius:8px; white-space:nowrap;
+  }
+  .parkcard p{margin:0 0 10px; font-size:13.5px; color:var(--ink-soft);}
+  .parknote{
+    margin-top:18px; font-size:12.5px; color:var(--ink-soft); font-style:italic;
+  }
+
   /* ---- Camper card ---- */
   .camperwrap{background:var(--asphalt); color:#fff;}
   .camperwrap .kicker{color:var(--yellow);}
@@ -248,6 +266,15 @@
   .priceline{display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; padding-top:16px; border-top:1px dashed rgba(255,255,255,0.16);}
   .priceline .amount{font-family:'JetBrains Mono',monospace; font-size:26px; color:var(--yellow); font-weight:600;}
   .priceline .sub{font-size:11.5px; color:#9AA2B2;}
+
+  /* ---- Parking booking buttons ---- */
+  .parklinks{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .parklinks a{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; text-decoration:none;
+    padding:8px 12px; border-radius:8px;
+  }
+  .parklinks .book{background:var(--teal); color:#fff;}
+  .parklinks .locate{background:var(--parchment-2); color:var(--ink);}
 
   /* ---- Budget ---- */
   .toggle{
@@ -406,6 +433,7 @@
   <a href="#rute">Rute</a>
   <a href="#byer">Tid i byerne</a>
   <a href="#koereplan">Kørerplan</a>
+  <a href="#parkering">Parkering</a>
   <a href="#camper">Camper</a>
   <a href="#budget">Budget</a>
   <a href="#pakke">Pakkeliste</a>
@@ -719,6 +747,78 @@
   </div>
 </section>
 
+<section id="parkering">
+  <span class="kicker">Parker fornuftigt</span>
+  <h2 class="sectitle">Hvor stiller vi camperen?</h2>
+  <p class="secdesc">Tættest på centrum uden at betale hotel-priser. Alle fem er rigtige Stellplätze/campingpladser lavet til autocampere, ikke gadeparkering.</p>
+
+  <div class="parklist">
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Berlin</span><span class="pname">Stellplatz Berlin-Mitte</span></div>
+        <span class="pprice">~20-25€/nat</span>
+      </div>
+      <p>95 pladser midt i Mitte, gå- eller cykelafstand til Alexanderplatz, Brandenburger Tor og Museumsinsel. Direkte adgang til offentlig transport ved pladsen.</p>
+      <div class="parklinks">
+        <a class="book" href="https://wohnmobiloase.com/" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Wohnmobilstellplatz+Berlin+Mitte" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Prag</span><span class="pname">Praguecamp</span></div>
+        <span class="pprice">~25-30€/nat</span>
+      </div>
+      <p>Ligger på en ø i Vltava, kun 1 km fra centrum. 15 minutter med bus/sporvogn, eller gå direkte til den gamle bydel.</p>
+      <div class="parklinks">
+        <a class="book" href="https://www.praguecamp.cz/en/" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Praguecamp+Troja+Prague" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Strasbourg</span><span class="pname">Camping de Strasbourg (CityKamp)</span></div>
+        <span class="pprice">~29-35€/nat</span>
+      </div>
+      <p>I Montagne Verte-kvarteret, 10 minutter på cykel eller med sporvogn til Petite France, 35 minutters gåtur hvis I hellere vil strække benene.</p>
+      <div class="parklinks">
+        <a class="book" href="https://www.camping-strasbourg.com/" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Camping+de+Strasbourg+CityKamp" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Paris</span><span class="pname">Camping de Paris</span></div>
+        <span class="pprice">~35-45€/nat</span>
+      </div>
+      <p>I Bois de Boulogne, 16. arrondissement, ved Seinen. Gratis shuttlebus til Metro Porte Maillot, derfra direkte ind til centrum. Dyrere end de andre, men Paris har ikke billigere reelle alternativer for en camper.</p>
+      <div class="parklinks">
+        <a class="book" href="https://www.campingparis.fr/" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Camping+de+Paris+Bois+de+Boulogne" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Amsterdam</span><span class="pname">Camperpark Amsterdam</span></div>
+        <span class="pprice">~25-30€/nat</span>
+      </div>
+      <p>Ved Gaasperplas, metrolinje 53 lige ved siden af pladsen, kører direkte til Amsterdam Centraal på cirka 15 minutter.</p>
+      <div class="parklinks">
+        <a class="book" href="https://camperparkamsterdam.nl/en/reservation" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Camperpark+Amsterdam+Gaasperplas" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="parknote">Priser er cirka-priser og ændrer sig med sæsonen, book direkte hos hver plads for korrekt pris og ledighed. August er højsæson i alle fem byer, book så tidligt som muligt.</p>
+</section>
+
 <section id="camper" class="camperwrap">
   <span class="kicker">Køretøjet</span>
   <h2 class="sectitle">Camperen</h2>
@@ -747,6 +847,7 @@
       </div>
       <div class="sub" style="text-align:right;">≈ €212/dag<br>≈ 1.665 kr</div>
     </div>
+    <a class="mapbtn" style="display:flex; justify-content:center; margin-top:16px; margin-bottom:0;" href="https://indiecampers.com/rent-an-rv/hamburg/hamburg/2026-07-26/2026-08-01/eu-comfort-space-4-auto-select/offer/special" target="_blank" rel="noopener">🚐 Book camperen hos Indie Campers</a>
   </div>
 </section>
 
@@ -824,7 +925,7 @@
   const budget = [
     {label:'Camper (7 dage, tilbud)', note:'Comfort Space Select, Indie Campers', group:1488},
     {label:'Brændstof', note:'~2.400 km, diesel', group:450},
-    {label:'Overnatning', note:'6 nætter, Stellplätze/camping', group:200},
+    {label:'Overnatning', note:'6 nætter, se Parkering-sektionen for steder', group:190},
     {label:'Vejafgifter', note:'Tjekkiet + Frankrig', group:115},
     {label:'Mad', note:'4 pers × 7 dage', group:560},
     {label:'Byoplevelser', note:'Entré, museer, transport', group:500},
