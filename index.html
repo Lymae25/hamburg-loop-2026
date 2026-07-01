@@ -276,6 +276,37 @@
   .parklinks .book{background:var(--teal); color:#fff;}
   .parklinks .locate{background:var(--parchment-2); color:var(--ink);}
 
+  /* ---- Skema & beregner ---- */
+  .schedlist{display:flex; flex-direction:column; gap:10px;}
+  .schedcard{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 16px;
+  }
+  .schedtop{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;}
+  .schedtop .sname{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:16px; text-transform:uppercase;}
+  .schedtop .sdate{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); display:block; margin-top:2px;}
+  .schedplan{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:10px;}
+  .schedplan div{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);}
+  .schedplan b{color:var(--ink); font-weight:700;}
+  .schedinput{display:flex; flex-direction:column; gap:6px; margin-bottom:8px;}
+  .schedinput label{font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);}
+  .schedinput input{
+    font-family:'JetBrains Mono',monospace; font-size:14px; padding:9px 10px;
+    border:1px solid var(--line); border-radius:8px; background:var(--parchment); color:var(--ink);
+  }
+  .schedstatus{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700;
+    padding:8px 10px; border-radius:8px; display:none;
+  }
+  .schedstatus.ontime{display:block; background:var(--teal-soft); color:var(--teal);}
+  .schedstatus.late{display:block; background:#FCE8E0; color:var(--orange);}
+  .schedstatus.early{display:block; background:var(--teal-soft); color:var(--teal);}
+  .schedreset{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-soft);
+    background:none; border:1px solid var(--line); border-radius:100px; padding:8px 14px;
+    margin-top:8px; cursor:pointer;
+  }
+
   /* ---- Option toggle ---- */
   .opttoggle{
     display:flex; gap:8px; padding:16px 18px 0;
@@ -468,6 +499,7 @@
 
 <nav class="quicknav">
   <a href="#rute">Rute</a>
+  <a href="#skema">Skema</a>
   <a href="#byer">Tid i byerne</a>
   <a href="#koereplan">Kørerplan</a>
   <a href="#parkering">Parkering</a>
@@ -811,6 +843,22 @@
 
   </div>
   </div><!-- /opt2 -->
+</section>
+
+<section id="skema">
+  <span class="kicker">Er vi på tid?</span>
+  <h2 class="sectitle">Skema &amp; beregner</h2>
+  <p class="secdesc">Planlagte af- og ankomsttider for hver etape. Indtast hvornår I faktisk kører fra et sted, så regner den ud om I er foran, bagud, eller til tiden i forhold til planen. Gemmes automatisk på jeres telefon.</p>
+
+  <div class="opt-block opt1 active" id="skema-opt1">
+  <div class="schedlist" id="schedList1"></div>
+  </div>
+
+  <div class="opt-block opt2" id="skema-opt2">
+  <div class="schedlist" id="schedList2"></div>
+  </div>
+
+  <button class="schedreset" onclick="resetSchedule()">↺ Nulstil alle tider</button>
 </section>
 
 <section id="byer">
@@ -1483,6 +1531,98 @@
     document.getElementById('btnGroup').classList.remove('active');
     renderBudget('person');
   });
+
+  // ---- Skema & beregner ----
+  // Planlagt afgang (lokal tid, ISO uden tidszone) + varighed i timer
+  const schedule1 = [
+    {id:'o1_1', name:'Hamburg → Berlin', depart:'2026-07-24T16:00', dur:3},
+    {id:'o1_2', name:'Berlin → Prag', depart:'2026-07-25T13:00', dur:4},
+    {id:'o1_3', name:'Prag → Interlaken', depart:'2026-07-26T06:00', dur:8.5},
+    {id:'o1_4', name:'Interlaken → Paris', depart:'2026-07-26T17:00', dur:6.5},
+    {id:'o1_5', name:'Paris → Amsterdam', depart:'2026-07-28T12:00', dur:5},
+    {id:'o1_6', name:'Amsterdam → Hamburg (natkørsel)', depart:'2026-07-31T02:00', dur:5},
+  ];
+  const schedule2 = [
+    {id:'o2_1', name:'Hamburg → Amsterdam', depart:'2026-07-24T16:00', dur:5},
+    {id:'o2_2', name:'Amsterdam → Paris', depart:'2026-07-26T09:00', dur:5},
+    {id:'o2_3', name:'Paris → Nice', depart:'2026-07-27T06:00', dur:9},
+    {id:'o2_4', name:'Nice → Monaco → Cannes → Nice', depart:'2026-07-29T10:00', dur:2},
+    {id:'o2_5', name:'Nice → Hamburg (natkørsel)', depart:'2026-07-29T22:00', dur:14.5},
+  ];
+
+  function fmtTime(d){
+    return d.toLocaleString('da-DK', {weekday:'short', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
+  }
+  function fmtHM(mins){
+    const h = Math.floor(Math.abs(mins)/60), m = Math.abs(mins)%60;
+    return (h>0 ? h+'t ' : '') + m + 'min';
+  }
+
+  function renderSchedule(list, containerId, storagePrefix){
+    const container = document.getElementById(containerId);
+    let html = '';
+    list.forEach(leg => {
+      const plannedDepart = new Date(leg.depart);
+      const plannedArrive = new Date(plannedDepart.getTime() + leg.dur*3600000);
+      const inputId = storagePrefix + '_' + leg.id;
+      html += `<div class="schedcard">
+        <div class="schedtop">
+          <div><span class="sname">${leg.name}</span><span class="sdate">${leg.dur}t kørsel</span></div>
+        </div>
+        <div class="schedplan">
+          <div>Planlagt afgang<br><b>${fmtTime(plannedDepart)}</b></div>
+          <div>Planlagt ankomst<br><b>${fmtTime(plannedArrive)}</b></div>
+        </div>
+        <div class="schedinput">
+          <label for="${inputId}">Faktisk afgangstidspunkt</label>
+          <input type="datetime-local" id="${inputId}">
+        </div>
+        <div class="schedstatus" id="${inputId}_status"></div>
+      </div>`;
+    });
+    container.innerHTML = html;
+
+    list.forEach(leg => {
+      const inputId = storagePrefix + '_' + leg.id;
+      const input = document.getElementById(inputId);
+      const statusEl = document.getElementById(inputId + '_status');
+      const saved = localStorage.getItem(inputId);
+      if(saved){ input.value = saved; }
+      function update(){
+        if(!input.value){ statusEl.className = 'schedstatus'; localStorage.removeItem(inputId); return; }
+        localStorage.setItem(inputId, input.value);
+        const plannedDepart = new Date(leg.depart);
+        const plannedArrive = new Date(plannedDepart.getTime() + leg.dur*3600000);
+        const actualDepart = new Date(input.value);
+        const actualArrive = new Date(actualDepart.getTime() + leg.dur*3600000);
+        const deltaMin = Math.round((actualArrive - plannedArrive) / 60000);
+        if(Math.abs(deltaMin) <= 10){
+          statusEl.className = 'schedstatus ontime';
+          statusEl.textContent = '✅ Til tiden, forventet ankomst ' + fmtTime(actualArrive);
+        } else if(deltaMin > 0){
+          statusEl.className = 'schedstatus late';
+          statusEl.textContent = '🐢 ' + fmtHM(deltaMin) + ' bagud, forventet ankomst ' + fmtTime(actualArrive);
+        } else {
+          statusEl.className = 'schedstatus early';
+          statusEl.textContent = '⚡ ' + fmtHM(deltaMin) + ' foran, forventet ankomst ' + fmtTime(actualArrive);
+        }
+      }
+      input.addEventListener('change', update);
+      update();
+    });
+  }
+
+  function resetSchedule(){
+    [...schedule1, ...schedule2].forEach(leg => {
+      localStorage.removeItem('o1_' + leg.id);
+      localStorage.removeItem('o2_' + leg.id);
+    });
+    renderSchedule(schedule1, 'schedList1', 'o1');
+    renderSchedule(schedule2, 'schedList2', 'o2');
+  }
+
+  renderSchedule(schedule1, 'schedList1', 'o1');
+  renderSchedule(schedule2, 'schedList2', 'o2');
 
   // ---- Packing list ----
   const packing = {
