@@ -316,6 +316,34 @@
   .whycard p{margin:0 0 8px; font-size:13.5px; color:var(--ink);}
   .whycard p:last-child{margin-bottom:0;}
 
+  /* ---- Driver rotation ---- */
+  .shiftrule{
+    background:var(--asphalt); color:#fff; border-radius:var(--radius);
+    padding:16px; margin-bottom:20px; font-size:13.5px; line-height:1.6;
+  }
+  .shiftrule b{color:var(--yellow); font-family:'Big Shoulders Display',sans-serif; text-transform:uppercase; display:block; margin-bottom:4px; font-size:15px;}
+  .shiftgrid{display:flex; flex-direction:column; gap:10px;}
+  .shiftcard{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 16px;
+  }
+  .shifttop{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:8px;}
+  .shifttop .sleg{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:17px; text-transform:uppercase;}
+  .shifttop .stime{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft);}
+  .roles{display:flex; gap:8px; flex-wrap:wrap;}
+  .role{
+    display:flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600;
+    padding:6px 10px; border-radius:8px;
+  }
+  .role.driver{background:var(--teal-soft); color:var(--teal);}
+  .role.copilot{background:var(--parchment-2); color:var(--ink-soft);}
+  .role.rest{background:#fff; border:1px dashed var(--line); color:var(--ink-soft);}
+  .splitnote{
+    margin-top:10px; font-size:12px; color:var(--orange); font-weight:600;
+    font-family:'JetBrains Mono',monospace;
+  }
+
   /* ---- Tips ---- */
   .tipsgrid{display:flex; flex-direction:column; gap:10px;}
   .tipcard{
@@ -351,9 +379,10 @@
   <span class="eyebrow">● UGE 31 · 27 JUL–3 AUG 2026</span>
   <h1>Shabab Loop<br>Around<br><span>Europa.</span></h1>
   <span class="banana-tag">🍌 Joshua laver planer som en banat</span>
-  <p class="sub">Hamburg → Berlin → Prag → Nürnberg → Paris → Amsterdam → Hamburg. 2.400 km, fire (måske fem) mand, én camper. Highlights-tour, ikke afslapning.</p>
+  <p class="sub">Hamburg → Berlin → Prag → Strasbourg → Paris → Amsterdam → Hamburg. 2.500 km, fire (måske fem) mand, én camper. Highlights-tour, ikke afslapning.</p>
 
   <div class="crew">
+    <span class="crewchip">🚐 Lymae</span>
     <span class="crewchip">🕶️ Youssef</span>
     <span class="crewchip">🎮 Musti</span>
     <span class="crewchip">🧢 LJ</span>
@@ -377,6 +406,7 @@
 <nav class="quicknav">
   <a href="#rute">Rute</a>
   <a href="#byer">Tid i byerne</a>
+  <a href="#koereplan">Kørerplan</a>
   <a href="#camper">Camper</a>
   <a href="#budget">Budget</a>
   <a href="#pakke">Pakkeliste</a>
@@ -390,10 +420,10 @@
 
   <div class="mapwrap">
     <iframe
-      src="https://www.google.com/maps?saddr=Hamburg,+Germany&daddr=Berlin,+Germany+to:Prague,+Czechia+to:N%C3%BCrnberg,+Germany+to:Paris,+France+to:Amsterdam,+Netherlands+to:Hamburg,+Germany&output=embed"
+      src="https://www.google.com/maps?saddr=Hamburg,+Germany&daddr=Berlin,+Germany+to:Prague,+Czechia+to:Strasbourg,+France+to:Paris,+France+to:Amsterdam,+Netherlands+to:Hamburg,+Germany&output=embed"
       loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Shabab Loop rute"></iframe>
   </div>
-  <a class="mapbtn" href="https://www.google.com/maps/dir/Hamburg,+Germany/Berlin,+Germany/Prague,+Czechia/N%C3%BCrnberg,+Germany/Paris,+France/Amsterdam,+Netherlands/Hamburg,+Germany" target="_blank" rel="noopener">🗺️ Åbn hele loopet i Google Maps</a>
+  <a class="mapbtn" href="https://www.google.com/maps/dir/Hamburg,+Germany/Berlin,+Germany/Prague,+Czechia/Strasbourg,+France/Paris,+France/Amsterdam,+Netherlands/Hamburg,+Germany" target="_blank" rel="noopener">🗺️ Åbn hele loopet i Google Maps</a>
 
   <div class="route">
 
@@ -432,32 +462,32 @@
     <details class="stop">
       <summary>
         <div class="datehead">
-          <span class="nickname">Den ingen har hørt om</span>
+          <span class="nickname">Petite France, Grand Vibe</span>
           <span class="day">Ons 29/7 · Dag 3</span>
-          <span class="city">Prag → Nürnberg</span>
+          <span class="city">Prag → Strasbourg</span>
         </div>
-        <span class="drive mono">380 KM · 4T</span>
+        <span class="drive mono">600 KM · 6T</span>
       </summary>
       <div class="stopbody">
-        <p>Formiddag ved Prags slot og den gamle bydel. Kør vestpå mod Tyskland igen, overnatning på Stellplatz i Nürnberg-området med aftenmad i altstadt.</p>
-        <div class="tip">Mellemstationen er nødvendig: Prag–Paris i ét hug er 890 km og for langt til en camper-dag.</div>
-        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Prague,Czechia&destination=N%C3%BCrnberg,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+        <p>Formiddag ved Prags slot og den gamle bydel. Kør vestpå gennem Tyskland, skift til at køre undervejs. Ankomst i Strasbourg om aftenen, gåtur i Petite France med kanaler og bindingsværkshuse, perfekt til content.</p>
+        <div class="tip">Mellemstationen er nødvendig: Prag–Paris i ét hug er 890 km og for langt til en camper-dag. Strasbourg er den mest fotogene løsning på det problem.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Prague,Czechia&destination=Strasbourg,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
       </div>
     </details>
 
     <details class="stop">
       <summary>
         <div class="datehead">
-          <span class="nickname">Maratonetappen</span>
+          <span class="nickname">Sidste Baguette-Stræk</span>
           <span class="day">Tor 30/7 · Dag 4</span>
-          <span class="city">Nürnberg → Paris</span>
+          <span class="city">Strasbourg → Paris</span>
         </div>
-        <span class="drive mono">500 KM · 5T</span>
+        <span class="drive mono">490 KM · 4,5T</span>
       </summary>
       <div class="stopbody">
-        <p>Den lange køredag. Skift til at køre undervejs. Ankomst i Paris sen eftermiddag, tjek ind på campingplads i udkanten og tag offentlig transport ind til centrum.</p>
+        <p>Formiddag i Petite France inden afgang. Kortere stræk end resten af turen, ankomst i Paris midt på eftermiddagen, tjek ind på campingplads i udkanten og tag offentlig transport ind til centrum.</p>
         <div class="tip">Kør ikke selv ind i centrum af Paris med camperen, brug park &amp; ride.</div>
-        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=N%C3%BCrnberg,Germany&destination=Paris,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Strasbourg,France&destination=Paris,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
       </div>
     </details>
 
@@ -557,16 +587,16 @@
       <p>Ankomst tir 28/7 ca. 17:00, afgang ons 29/7 ca. 13:00.</p>
     </div>
 
-    <div class="citycard thin">
+    <div class="citycard full">
       <div class="citytop">
-        <span class="cname">Nürnberg</span>
-        <span class="cbadge">Kun aften</span>
+        <span class="cname">Strasbourg</span>
+        <span class="cbadge">Aften + morgen</span>
       </div>
       <div class="citymeta">
         <span><b>1</b> nat</span>
-        <span><b>~4-5 t</b> vågne timer</span>
+        <span><b>~13-14 t</b> vågne timer</span>
       </div>
-      <p>Ankomst ons 29/7 ca. 17:00, tidlig afgang tor 30/7 ca. 08:00 pga. den lange køredag videre.</p>
+      <p>Ankomst ons 29/7 ca. 19:00 (6t kørsel, delt mellem alle), afgang tor 30/7 ca. 10:00. Kortere køretur videre til Paris giver god tid til Petite France om morgenen.</p>
     </div>
 
     <div class="citycard full">
@@ -578,7 +608,7 @@
         <span><b>2</b> nætter</span>
         <span><b>~27 t</b> vågne timer</span>
       </div>
-      <p>Ankomst tor 30/7 ca. 16:00, afgang lør 1/8 ca. 12:00. Den eneste by med en fridag uden kørsel.</p>
+      <p>Ankomst tor 30/7 ca. 15:00, afgang lør 1/8 ca. 12:00. Den eneste by med en fridag uden kørsel.</p>
     </div>
 
     <div class="citycard thin">
@@ -596,9 +626,97 @@
   </div>
 
   <div class="whycard">
-    <b>Hvorfor er Nürnberg overhovedet med?</b>
-    <p>Prag → Paris direkte er 890 km, cirka 9-10 timers kørsel. For langt til én camper-dag med fire mand og bagage.</p>
-    <p>Derfor er strækket delt: Prag → Nürnberg (380 km) og Nürnberg → Paris (500 km). Nürnberg ligger midtvejs og har gode Stellplätze, men det er en nødvendig pause, ikke en ønske-destination. Regn med kun en aften der, ikke en bytur.</p>
+    <b>Hvorfor Strasbourg og ikke bare kørt direkte?</b>
+    <p>Prag → Paris direkte er 890 km, cirka 9-10 timers kørsel. For langt til én dag, selv med skiftende chauffører.</p>
+    <p>Derfor er strækket delt: Prag → Strasbourg (600 km) og Strasbourg → Paris (490 km). Strasbourg er ikke bare en praktisk pause, det er en destination i sig selv med Petite France, kanaler og bindingsværk, perfekt til content undervejs.</p>
+  </div>
+</section>
+
+<section id="koereplan">
+  <span class="kicker">Hardcore mode</span>
+  <h2 class="sectitle">Kørerplan</h2>
+  <p class="secdesc">Alle fire har kørekort, så vi skiftes hele turen. Reglen er simpel:</p>
+
+  <div class="shiftrule">
+    <b>Altid 2 oppe</b>
+    1 kører, 1 er co-pilot (navigation, musik, holder føreren vågen). De andre 2 sover eller chiller bagi. Vi bytter roller for hver etape, så alle både kører og hviler undervejs.
+  </div>
+
+  <div class="shiftgrid">
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 1 · HH → Berlin</span>
+        <span class="stime mono">3T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Lymae kører</span>
+        <span class="role copilot">🧭 LJ co-pilot</span>
+        <span class="role rest">😴 Youssef + Musti</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 2 · Berlin → Prag</span>
+        <span class="stime mono">4T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Youssef kører</span>
+        <span class="role copilot">🧭 Musti co-pilot</span>
+        <span class="role rest">😴 Lymae + LJ</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 3 · Prag → Strasbourg</span>
+        <span class="stime mono">6T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 LJ kører</span>
+        <span class="role copilot">🧭 Lymae co-pilot</span>
+        <span class="role rest">😴 Youssef + Musti</span>
+      </div>
+      <div class="splitnote">⚡ Længste etape: byt halvvejs, Youssef/Musti tager 2. halvdel</div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 4 · Strasbourg → Paris</span>
+        <span class="stime mono">4,5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Musti kører</span>
+        <span class="role copilot">🧭 Youssef co-pilot</span>
+        <span class="role rest">😴 Lymae + LJ</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 5 · Paris → Amsterdam</span>
+        <span class="stime mono">5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Lymae kører</span>
+        <span class="role copilot">🧭 Youssef co-pilot</span>
+        <span class="role rest">😴 LJ + Musti</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 6 · Amsterdam → HH</span>
+        <span class="stime mono">5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 LJ kører</span>
+        <span class="role copilot">🧭 Musti co-pilot</span>
+        <span class="role rest">😴 Lymae + Youssef</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -660,7 +778,7 @@
   <h2 class="sectitle">Praktiske tips</h2>
   <div class="tipsgrid">
     <div class="tipcard"><b>Vignetter</b>Tjekkiet: e-vignet online inden grænsen. Frankrig: betalingsmotorveje undervejs, hav kort/kontant klar.</div>
-    <div class="tipcard"><b>Stellplätze bookes tidligt</b>August er højsæson i alle fem byer. Book Berlin, Prag, Nürnberg, Paris og Amsterdam i god tid.</div>
+    <div class="tipcard"><b>Stellplätze bookes tidligt</b>August er højsæson i alle fem byer. Book Berlin, Prag, Strasbourg, Paris og Amsterdam i god tid.</div>
     <div class="tipcard"><b>Byerne kører I ikke ind i</b>Paris og Amsterdam: parkér camperen i udkanten og brug offentlig transport ind til centrum.</div>
     <div class="tipcard"><b>Depositum</b>Tjek om kaution/forsikring er inkluderet i de €1.488, det er den ofte ikke.</div>
   </div>
