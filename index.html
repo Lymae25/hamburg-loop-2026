@@ -276,6 +276,43 @@
   .parklinks .book{background:var(--teal); color:#fff;}
   .parklinks .locate{background:var(--parchment-2); color:var(--ink);}
 
+  /* ---- Option toggle ---- */
+  .opttoggle{
+    display:flex; gap:8px; padding:16px 18px 0;
+    background:var(--parchment);
+  }
+  .optbtn{
+    flex:1; text-align:center; cursor:pointer;
+    font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:15px;
+    padding:14px 10px; border-radius:12px; border:2px solid var(--line);
+    background:#fff; color:var(--ink-soft);
+  }
+  .optbtn small{display:block; font-family:'JetBrains Mono',monospace; font-weight:600; font-size:10.5px; text-transform:none; letter-spacing:0; margin-top:2px;}
+  .optbtn.active{background:var(--asphalt); color:#fff; border-color:var(--asphalt);}
+  .optbtn.active small{color:var(--yellow);}
+  .opt-block{display:none;}
+  .opt-block.active{display:block;}
+
+  /* ---- Compare cards ---- */
+  .comparegrid{display:flex; flex-direction:column; gap:14px;}
+  .comparecard{
+    background:#fff; border:2px solid var(--line); border-radius:var(--radius); padding:18px 16px;
+  }
+  .comparecard.opt1{border-color:var(--teal);}
+  .comparecard.opt2{border-color:var(--orange);}
+  .comparetop{display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;}
+  .comparetop h3{font-size:21px;}
+  .comparetop .ctag{font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:100px;}
+  .comparecard.opt1 .ctag{background:var(--teal-soft); color:var(--teal);}
+  .comparecard.opt2 .ctag{background:#FCE8E0; color:var(--orange);}
+  .comparepath{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft); margin-bottom:12px;}
+  .prosconswrap{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .proscons b{display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;}
+  .proscons.pros b{color:var(--teal);}
+  .proscons.cons b{color:var(--orange);}
+  .proscons ul{margin:0; padding-left:16px; font-size:12.5px; color:var(--ink); line-height:1.5;}
+  .proscons li{margin-bottom:4px;}
+
   /* ---- Budget ---- */
   .toggle{
     display:inline-flex; background:#fff; border:1px solid var(--line); border-radius:100px;
@@ -403,7 +440,7 @@
 </div>
 
 <header class="hero">
-  <span class="eyebrow">● UGE 31 · 27 JUL–3 AUG 2026</span>
+  <span class="eyebrow">● FRE 24 JUL – FRE 31 JUL 2026</span>
   <h1>Shabab Loop<br>Around<br><span>Europa.</span></h1>
   <span class="banana-tag">🍌 Joshua laver planer som en banat</span>
   <p class="sub">Hamburg → Berlin → Prag → Strasbourg → Interlaken → Paris → Amsterdam → Hamburg. ~3.050 km, fire mand, én camper. Highlights-tour, ikke afslapning.</p>
@@ -440,11 +477,81 @@
   <a href="#tips">Tips</a>
 </nav>
 
+<div class="opttoggle">
+  <div class="optbtn active" id="btnOpt1" onclick="setOption(1)">LJs Rute<small>Byer &amp; Bjerge</small></div>
+  <div class="optbtn" id="btnOpt2" onclick="setOption(2)">Youssefs Rute<small>Riviera Run</small></div>
+</div>
+
+<section id="compare">
+  <span class="kicker">Youssefs idé</span>
+  <h2 class="sectitle">To ruter, én stemme</h2>
+  <p class="secdesc">Samme afhentning, samme aflevering (Hamburg, fre 24/7 kl. 16:00 → fre 31/7 kl. 10:00), helt forskellig tur. Skift mellem Option 1 og Option 2 øverst for at se hele ruten, byerne og budgettet for hver.</p>
+
+  <div class="comparegrid">
+
+    <div class="comparecard opt1">
+      <div class="comparetop">
+        <h3>LJs Rute · Byer &amp; Bjerge</h3>
+        <span class="ctag">~3.050 KM</span>
+      </div>
+      <div class="comparepath">Hamburg → Berlin → Prag → Strasbourg → Interlaken → Paris → Amsterdam → Hamburg</div>
+      <div class="prosconswrap">
+        <div class="proscons pros">
+          <b>Fordele</b>
+          <ul>
+            <li>5 lande, mest variation</li>
+            <li>Berlin + Prag: historie og natteliv</li>
+            <li>Schweiziske Alper, unik udsigt</li>
+            <li>Kun 1 natkørsel (retur-etapen)</li>
+          </ul>
+        </div>
+        <div class="proscons cons">
+          <b>Ulemper</b>
+          <ul>
+            <li>Kun 1 rigtig fridag (Paris)</li>
+            <li>Flest grænser/vignetter (CZ, FR, CH)</li>
+            <li>4 ud af 5 byer kun aften+morgen</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparecard opt2">
+      <div class="comparetop">
+        <h3>Youssefs Rute · Riviera Run</h3>
+        <span class="ctag">~3.380 KM</span>
+      </div>
+      <div class="comparepath">Hamburg → Amsterdam → Paris → Nice (+Monaco+Cannes) → Strasbourg → Hamburg</div>
+      <div class="prosconswrap">
+        <div class="proscons pros">
+          <b>Fordele</b>
+          <ul>
+            <li>2 hele fridage i Nice/Riviera</li>
+            <li>Monaco + Cannes på en dagstur</li>
+            <li>Sommer/strand-vibe, godt til content</li>
+            <li>Kun 3 lande at holde styr på</li>
+          </ul>
+        </div>
+        <div class="proscons cons">
+          <b>Ulemper</b>
+          <ul>
+            <li>930 km/9t i træk Paris→Nice</li>
+            <li>Ingen Berlin, Prag eller Schweiz</li>
+            <li>Flest km i alt af de to ruter</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <section id="rute">
   <span class="kicker">Dag for dag</span>
   <h2 class="sectitle">Ruten</h2>
-  <p class="secdesc">Tryk på en etape for detaljer, eller se hele loopet tegnet op på kortet. Fire køredage, én mellemstation, og to hele bydage.</p>
+  <p class="secdesc">Tryk på en etape for detaljer, eller se hele loopet tegnet op på kortet.</p>
 
+  <div class="opt-block opt1 active" id="rute-opt1">
   <div class="mapwrap">
     <iframe
       src="https://www.google.com/maps?saddr=Hamburg,+Germany&daddr=Berlin,+Germany+to:Prague,+Czechia+to:Strasbourg,+France+to:Interlaken,+Switzerland+to:Paris,+France+to:Amsterdam,+Netherlands+to:Hamburg,+Germany&output=embed"
@@ -458,13 +565,13 @@
       <summary>
         <div class="datehead">
           <span class="nickname">Opvarmningsrunden</span>
-          <span class="day">Man 27/7 · Dag 1</span>
+          <span class="day">Fre 24/7 · Dag 1</span>
           <span class="city">Hamburg → Berlin</span>
         </div>
         <span class="drive mono">290 KM · 3T</span>
       </summary>
       <div class="stopbody">
-        <p>Afhentning af camperen i Hamburg om formiddagen. Pak bilen, kort indkøb, og kør sydøst mod Berlin. Tjek ind på Stellplatz og brug aftenen i Kreuzberg eller Mitte.</p>
+        <p>Afhentning af camperen i Hamburg kl. 16:00. Pak bilen, kort indkøb, og kør sydøst mod Berlin. Tjek ind på Stellplatz og brug aftenen i Kreuzberg eller Mitte.</p>
         <div class="tip">Book Stellplatz i Berlin i god tid, august er højsæson.</div>
         <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Hamburg,Germany&destination=Berlin,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
       </div>
@@ -474,7 +581,7 @@
       <summary>
         <div class="datehead">
           <span class="nickname">Shabab Unlocked: Level 2</span>
-          <span class="day">Tir 28/7 · Dag 2</span>
+          <span class="day">Lør 25/7 · Dag 2</span>
           <span class="city">Berlin → Prag</span>
         </div>
         <span class="drive mono">350 KM · 4T</span>
@@ -490,7 +597,7 @@
       <summary>
         <div class="datehead">
           <span class="nickname">Petite France, Grand Vibe</span>
-          <span class="day">Ons 29/7 · Dag 3</span>
+          <span class="day">Søn 26/7 · Dag 3</span>
           <span class="city">Prag → Strasbourg</span>
         </div>
         <span class="drive mono">600 KM · 6T</span>
@@ -506,7 +613,7 @@
       <summary>
         <div class="datehead">
           <span class="nickname">Alperne på Vejen</span>
-          <span class="day">Tor 30/7 · Dag 4</span>
+          <span class="day">Man 27/7 · Dag 4</span>
           <span class="city">Strasbourg → Interlaken → Paris</span>
         </div>
         <span class="drive mono">918 KM · 9,5T</span>
@@ -523,7 +630,7 @@
       <summary>
         <div class="datehead">
           <span class="nickname">Selfie & baguette-dagen</span>
-          <span class="day">Fre 31/7 · Dag 5</span>
+          <span class="day">Tir 28/7 · Dag 5</span>
           <span class="city">Paris</span>
         </div>
         <span class="drive mono">0 KM · HELDAG</span>
@@ -539,7 +646,7 @@
       <summary>
         <div class="datehead">
           <span class="nickname">Sidste spurt nord</span>
-          <span class="day">Lør 1/8 · Dag 6</span>
+          <span class="day">Ons 29/7 · Dag 6</span>
           <span class="city">Paris → Amsterdam</span>
         </div>
         <span class="drive mono">430 KM · 5T</span>
@@ -554,41 +661,164 @@
     <details class="stop">
       <summary>
         <div class="datehead">
-          <span class="nickname">Hjem til mor</span>
-          <span class="day">Søn 2/8 · Dag 7</span>
-          <span class="city">Amsterdam → Hamburg</span>
+          <span class="nickname">Bonusdagen</span>
+          <span class="day">Tor 30/7 · Dag 7</span>
+          <span class="city">Amsterdam</span>
         </div>
-        <span class="drive mono">450 KM · 5T</span>
+        <span class="drive mono">0 KM · HELDAG</span>
       </summary>
       <div class="stopbody">
-        <p>Formiddag i Jordaan eller Vondelpark. Afgang tidlig eftermiddag, aflevering af camperen i Hamburg om aftenen.</p>
-        <div class="tip">Tjek afleveringstidspunkt og evt. rengøringskrav inden I kører de sidste km.</div>
-        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Amsterdam,Netherlands&destination=Hamburg,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+        <p>Fordi camperen først skal afleveres fredag kl. 10:00, får I en hel ekstra fridag i Amsterdam. Jordaan, Vondelpark, kanalerne, eller bare en rolig dag inden den sidste køretur.</p>
+        <div class="tip">Sov gerne noget af eftermiddagen, I skal bruge det til natkørslen.</div>
+        <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=Amsterdam,Netherlands" target="_blank" rel="noopener">📍 Se Amsterdam i Google Maps →</a>
       </div>
     </details>
 
     <details class="stop buffer">
       <summary>
         <div class="datehead">
-          <span class="nickname">Josh's sikkerhedsnet</span>
-          <span class="day">Man 3/8 · Buffer</span>
-          <span class="city">Hjemrejse</span>
+          <span class="nickname">Natkørslen</span>
+          <span class="day">Tor 30/7 nat → Fre 31/7</span>
+          <span class="city">Amsterdam → Hamburg</span>
         </div>
-        <span class="drive mono">RESERVE</span>
+        <span class="drive mono">450 KM · 5T</span>
       </summary>
       <div class="stopbody">
-        <p>Ingen faste planer, brug dagen hvis I bliver forsinkede undervejs, eller som en ekstra nats søvn før hjemrejsen. Officielt til uforudsete forsinkelser, uofficielt fordi Josh nok kommer for sent til afgang.</p>
+        <p>Afgang fra Amsterdam midt om natten (ca. 02:00-02:30 giver 2-3 timers margin), I skiftes som altid. Ankomst Hamburg tidlig morgen, aflevering af camperen kl. 10:00 fredag.</p>
+        <div class="tip">Ingen buffer-dag tilbage i denne version af ruten, hele ugen er brugt. Tjek afleverings- og rengøringskrav inden I lægger ud.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Amsterdam,Netherlands&destination=Hamburg,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
       </div>
     </details>
 
   </div>
+  </div><!-- /opt1 -->
+
+  <div class="opt-block opt2" id="rute-opt2">
+  <div class="mapwrap">
+    <iframe
+      src="https://www.google.com/maps?saddr=Hamburg,+Germany&daddr=Amsterdam,+Netherlands+to:Paris,+France+to:Nice,+France+to:Strasbourg,+France+to:Hamburg,+Germany&output=embed"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Riviera Run rute"></iframe>
+  </div>
+  <a class="mapbtn" href="https://www.google.com/maps/dir/Hamburg,+Germany/Amsterdam,+Netherlands/Paris,+France/Nice,+France/Strasbourg,+France/Hamburg,+Germany" target="_blank" rel="noopener">🗺️ Åbn hele loopet i Google Maps</a>
+
+  <div class="route">
+
+    <details class="stop" open>
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Nordvest Non-Stop</span>
+          <span class="day">Fre 24/7 · Dag 1</span>
+          <span class="city">Hamburg → Amsterdam</span>
+        </div>
+        <span class="drive mono">450 KM · 5T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Afhentning af camperen i Hamburg kl. 16:00. Direkte mod vest til Amsterdam, ankomst sen aften.</p>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Hamburg,Germany&destination=Amsterdam,Netherlands&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Kanaler & Croissanter</span>
+          <span class="day">Lør 25/7 · Dag 2</span>
+          <span class="city">Amsterdam → Paris</span>
+        </div>
+        <span class="drive mono">430 KM · 5T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Formiddag i Amsterdam, afgang midt på dagen mod Paris. Ankomst aften, tjek ind på campingplads i udkanten.</p>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Amsterdam,Netherlands&destination=Paris,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Solen Kalder</span>
+          <span class="day">Søn 26/7 · Dag 3</span>
+          <span class="city">Paris → Nice</span>
+        </div>
+        <span class="drive mono">930 KM · 9T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Den store dag, ligesom Interlaken-etapen i Option 1. I skiftes hele vejen ned gennem Bourgogne, Lyon og Provence. Ankomst Nice sen aften.</p>
+        <div class="tip">9 timer i træk er hårdt selv med skiftende chauffører, overvej et kort benstræk-stop ved Lyon eller Avignon undervejs.</div>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Paris,France&destination=Nice,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Riviera-dagen</span>
+          <span class="day">Man 27/7 · Dag 4</span>
+          <span class="city">Nice</span>
+        </div>
+        <span class="drive mono">0 KM · HELDAG</span>
+      </summary>
+      <div class="stopbody">
+        <p>Første hele fridag. Vieux Nice, Promenade des Anglais, stranden.</p>
+        <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=Nice,France" target="_blank" rel="noopener">📍 Se Nice i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Monaco & Cannes Loop</span>
+          <span class="day">Tir 28/7 · Dag 5</span>
+          <span class="city">Nice (dagstur)</span>
+        </div>
+        <span class="drive mono">~100 KM · HELDAG</span>
+      </summary>
+      <div class="stopbody">
+        <p>Kort køretur til Monaco (30 min) for Monte Carlo og havnen med superyachts, derefter Cannes (35 min fra Nice) for filmfestival-glamour. Tilbage i Nice til aften.</p>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Nice,France&destination=Monaco&waypoints=Cannes,France&travelmode=driving" target="_blank" rel="noopener">📍 Se loopet i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Tilbage Mod Nord</span>
+          <span class="day">Ons 29/7 · Dag 6</span>
+          <span class="city">Nice → Strasbourg</span>
+        </div>
+        <span class="drive mono">750 KM · 7,5T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Tidlig afgang fra Nice, lang dag mod nord. Ankomst Strasbourg aften, kort gåtur i Petite France hvis der er overskud.</p>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Nice,France&destination=Strasbourg,France&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+    <details class="stop buffer">
+      <summary>
+        <div class="datehead">
+          <span class="nickname">Sidste Stræk</span>
+          <span class="day">Tor 30/7 · Dag 7</span>
+          <span class="city">Strasbourg → Hamburg</span>
+        </div>
+        <span class="drive mono">720 KM · 7T</span>
+      </summary>
+      <div class="stopbody">
+        <p>Afgang tidlig formiddag, ankomst Hamburg aften. God margin til aflevering fredag kl. 10:00, ingen natkørsel nødvendig i denne version.</p>
+        <a class="maplink" href="https://www.google.com/maps/dir/?api=1&origin=Strasbourg,France&destination=Hamburg,Germany&travelmode=driving" target="_blank" rel="noopener">📍 Se etapen i Google Maps →</a>
+      </div>
+    </details>
+
+  </div>
+  </div><!-- /opt2 -->
 </section>
 
 <section id="byer">
   <span class="kicker">Ærlig snak</span>
   <h2 class="sectitle">Tid i hver by</h2>
-  <p class="secdesc">Vi kører 6 ud af 7 dage. Kun Paris giver en hel dag uden bilnøgler i hånden, resten er ankomst-aften + afgangs-morgen.</p>
+  <p class="secdesc">Skifter automatisk med rute-valget øverst på siden.</p>
 
+  <div class="opt-block opt1 active" id="byer-opt1">
   <div class="citylist">
 
     <div class="citycard thin">
@@ -600,7 +830,7 @@
         <span><b>1</b> nat</span>
         <span><b>~13 t</b> vågne timer</span>
       </div>
-      <p>Ankomst man 27/7 ca. 14:00, afgang tir 28/7 ca. 12:00.</p>
+      <p>Ankomst fre 24/7 ca. 19:00 (afhentning kl. 16:00), afgang lør 25/7 ca. 12:00.</p>
     </div>
 
     <div class="citycard thin">
@@ -612,7 +842,7 @@
         <span><b>1</b> nat</span>
         <span><b>~11-12 t</b> vågne timer</span>
       </div>
-      <p>Ankomst tir 28/7 ca. 17:00, afgang ons 29/7 ca. 13:00.</p>
+      <p>Ankomst lør 25/7 ca. 17:00, afgang søn 26/7 ca. 13:00.</p>
     </div>
 
     <div class="citycard full">
@@ -624,7 +854,7 @@
         <span><b>1</b> nat</span>
         <span><b>~10-11 t</b> vågne timer</span>
       </div>
-      <p>Ankomst ons 29/7 ca. 19:00 (6t kørsel, delt mellem alle), afgang tor 30/7 ca. 08:30. Tidlig morgen i Petite France, så af sted mod Schweiz.</p>
+      <p>Ankomst søn 26/7 ca. 19:00 (6t kørsel, delt mellem alle), afgang man 27/7 ca. 08:30. Tidlig morgen i Petite France, så af sted mod Schweiz.</p>
     </div>
 
     <div class="citycard thin">
@@ -648,19 +878,19 @@
         <span><b>2</b> nætter</span>
         <span><b>~24 t</b> vågne timer</span>
       </div>
-      <p>Ankomst tor 30/7 ca. 21:30 (sent pga. Schweiz-detour), afgang lør 1/8 ca. 12:00. Den eneste by med en fridag uden kørsel.</p>
+      <p>Ankomst man 27/7 ca. 21:30 (sent pga. Schweiz-detour), afgang ons 29/7 ca. 09:00. Den eneste by med en fridag uden kørsel i denne rute.</p>
     </div>
 
-    <div class="citycard thin">
+    <div class="citycard full">
       <div class="citytop">
         <span class="cname">Amsterdam</span>
-        <span class="cbadge">Aften + morgen</span>
+        <span class="cbadge">1 hel dag</span>
       </div>
       <div class="citymeta">
-        <span><b>1</b> nat</span>
-        <span><b>~10 t</b> vågne timer</span>
+        <span><b>2</b> nætter</span>
+        <span><b>~26 t</b> vågne timer</span>
       </div>
-      <p>Ankomst lør 1/8 ca. 18:00, afgang søn 2/8 ca. 13:00.</p>
+      <p>Ankomst ons 29/7 ca. 18:00, hel fridag tor 30/7 (bonus, fordi aflevering først er fre kl. 10:00), afgang natten til fredag ca. 02:00.</p>
     </div>
 
   </div>
@@ -670,6 +900,66 @@
     <p>Prag → Paris direkte er 890 km, cirka 9-10 timers kørsel. For langt til én dag, selv med skiftende chauffører.</p>
     <p>Derfor er strækket delt: Prag → Strasbourg (600 km) og Strasbourg → Paris (490 km). Strasbourg er ikke bare en praktisk pause, det er en destination i sig selv med Petite France, kanaler og bindingsværk, perfekt til content undervejs.</p>
   </div>
+  </div><!-- /byer opt1 -->
+
+  <div class="opt-block opt2" id="byer-opt2">
+  <div class="citylist">
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Amsterdam</span>
+        <span class="cbadge">Aften + morgen</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~13 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst fre 24/7 sen aften (afhentning kl. 16:00), afgang lør 25/7 midt på dagen.</p>
+    </div>
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Paris</span>
+        <span class="cbadge">Aften + morgen</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~12 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst lør 25/7 aften, tidlig afgang søn 26/7 mod Nice, det er en 930 km-dag.</p>
+    </div>
+
+    <div class="citycard full">
+      <div class="citytop">
+        <span class="cname">Nice</span>
+        <span class="cbadge">2 hele dage</span>
+      </div>
+      <div class="citymeta">
+        <span><b>3</b> nætter</span>
+        <span><b>~40 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst søn 26/7 sen aften, hele man 27/7 i Nice, hele tir 28/7 på Monaco+Cannes-loop, afgang ons 29/7 tidlig morgen. Klart mest afslapning af de to ruter.</p>
+    </div>
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Strasbourg</span>
+        <span class="cbadge">Aften + morgen</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~11 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst ons 29/7 sen aften (efter 7,5t kørsel fra Nice), afgang tor 30/7 formiddag.</p>
+    </div>
+
+  </div>
+
+  <div class="whycard">
+    <b>Hvorfor Strasbourg som sidste stop og ikke direkte hjem?</b>
+    <p>Nice → Hamburg direkte er over 1.400 km. Strasbourg deler turen naturligt op og betyder ingen natkørsel er nødvendig i denne version, i modsætning til LJs rute.</p>
+  </div>
+  </div><!-- /byer opt2 -->
 </section>
 
 <section id="koereplan">
@@ -679,9 +969,10 @@
 
   <div class="shiftrule">
     <b>Altid 2 oppe</b>
-    1 kører, 1 er co-pilot (navigation, musik, holder føreren vågen). De andre 2 sover eller chiller bagi. Vi bytter roller for hver etape, så alle både kører og hviler undervejs.
+    1 kører, 1 er co-pilot (navigation, musik, holder føreren vågen). De andre 2 sover eller chiller bagi. Vi bytter roller for hver etape, så alle både kører og hviler undervejs, og Joshua kører sit fair share ligesom resten.
   </div>
 
+  <div class="opt-block opt1 active" id="koereplan-opt1">
   <div class="shiftgrid">
 
     <div class="shiftcard">
@@ -710,15 +1001,26 @@
 
     <div class="shiftcard">
       <div class="shifttop">
-        <span class="sleg">Etape 3 · Prag → Strasbourg</span>
-        <span class="stime mono">6T</span>
+        <span class="sleg">Etape 3a · Prag → Strasbourg (1. halvdel)</span>
+        <span class="stime mono">3T</span>
       </div>
       <div class="roles">
         <span class="role driver">🚗 Youssef kører</span>
         <span class="role copilot">🧭 LJ co-pilot</span>
         <span class="role rest">😴 Musti + Joshua</span>
       </div>
-      <div class="splitnote">⚡ Længste etape: byt halvvejs, Joshua kører 2. halvdel med Musti som co-pilot</div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 3b · Prag → Strasbourg (2. halvdel)</span>
+        <span class="stime mono">3T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Joshua kører</span>
+        <span class="role copilot">🧭 Musti co-pilot</span>
+        <span class="role rest">😴 LJ + Youssef</span>
+      </div>
     </div>
 
     <div class="shiftcard">
@@ -745,15 +1047,26 @@
 
     <div class="shiftcard">
       <div class="shifttop">
-        <span class="sleg">Etape 4b · Interlaken → Paris</span>
-        <span class="stime mono">6,5T</span>
+        <span class="sleg">Etape 4b · Interlaken → Paris (1. halvdel)</span>
+        <span class="stime mono">3,25T</span>
       </div>
       <div class="roles">
         <span class="role driver">🚗 Youssef kører</span>
         <span class="role copilot">🧭 Joshua co-pilot</span>
         <span class="role rest">😴 LJ + Musti</span>
       </div>
-      <div class="splitnote">⚡ Lang aften-etape: byt halvvejs, Musti kører sidste stykke ind til Paris med LJ som co-pilot</div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 4c · Interlaken → Paris (2. halvdel)</span>
+        <span class="stime mono">3,25T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Joshua kører</span>
+        <span class="role copilot">🧭 LJ co-pilot</span>
+        <span class="role rest">😴 Youssef + Musti</span>
+      </div>
     </div>
 
     <div class="shiftcard">
@@ -762,9 +1075,9 @@
         <span class="stime mono">5T</span>
       </div>
       <div class="roles">
-        <span class="role driver">🚗 Youssef kører</span>
-        <span class="role copilot">🧭 Joshua co-pilot</span>
-        <span class="role rest">😴 LJ + Musti</span>
+        <span class="role driver">🚗 Musti kører</span>
+        <span class="role copilot">🧭 Youssef co-pilot</span>
+        <span class="role rest">😴 LJ + Joshua</span>
       </div>
     </div>
 
@@ -774,20 +1087,158 @@
         <span class="stime mono">5T</span>
       </div>
       <div class="roles">
-        <span class="role driver">🚗 Musti kører</span>
-        <span class="role copilot">🧭 LJ co-pilot</span>
-        <span class="role rest">😴 Youssef + Joshua</span>
+        <span class="role driver">🚗 LJ kører</span>
+        <span class="role copilot">🧭 Joshua co-pilot</span>
+        <span class="role rest">😴 Youssef + Musti</span>
       </div>
     </div>
 
   </div>
+  </div><!-- /koereplan opt1 -->
+
+  <div class="opt-block opt2" id="koereplan-opt2">
+  <div class="shiftgrid">
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 1 · HH → Amsterdam</span>
+        <span class="stime mono">5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Youssef kører</span>
+        <span class="role copilot">🧭 LJ co-pilot</span>
+        <span class="role rest">😴 Musti + Joshua</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 2 · Amsterdam → Paris</span>
+        <span class="stime mono">5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Musti kører</span>
+        <span class="role copilot">🧭 Joshua co-pilot</span>
+        <span class="role rest">😴 LJ + Youssef</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 3a · Paris → Nice (1/3)</span>
+        <span class="stime mono">3T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 LJ kører</span>
+        <span class="role copilot">🧭 Musti co-pilot</span>
+        <span class="role rest">😴 Youssef + Joshua</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 3b · Paris → Nice (2/3)</span>
+        <span class="stime mono">3T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Joshua kører</span>
+        <span class="role copilot">🧭 Youssef co-pilot</span>
+        <span class="role rest">😴 LJ + Musti</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 3c · Paris → Nice (3/3)</span>
+        <span class="stime mono">3T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Youssef kører</span>
+        <span class="role copilot">🧭 LJ co-pilot</span>
+        <span class="role rest">😴 Musti + Joshua</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">🏖️ Nice · Fridag</span>
+        <span class="stime mono">0T</span>
+      </div>
+      <div class="roles">
+        <span class="role rest">Ingen kører, alle på stranden</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 5 · Monaco + Cannes loop</span>
+        <span class="stime mono">2T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Musti kører</span>
+        <span class="role copilot">🧭 Joshua co-pilot</span>
+        <span class="role rest">😴 LJ + Youssef</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 6a · Nice → Strasbourg (1/2)</span>
+        <span class="stime mono">3,75T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 LJ kører</span>
+        <span class="role copilot">🧭 Youssef co-pilot</span>
+        <span class="role rest">😴 Musti + Joshua</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 6b · Nice → Strasbourg (2/2)</span>
+        <span class="stime mono">3,75T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Joshua kører</span>
+        <span class="role copilot">🧭 Musti co-pilot</span>
+        <span class="role rest">😴 LJ + Youssef</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 7a · Strasbourg → HH (1/2)</span>
+        <span class="stime mono">3,5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Youssef kører</span>
+        <span class="role copilot">🧭 LJ co-pilot</span>
+        <span class="role rest">😴 Musti + Joshua</span>
+      </div>
+    </div>
+
+    <div class="shiftcard">
+      <div class="shifttop">
+        <span class="sleg">Etape 7b · Strasbourg → HH (2/2)</span>
+        <span class="stime mono">3,5T</span>
+      </div>
+      <div class="roles">
+        <span class="role driver">🚗 Musti kører</span>
+        <span class="role copilot">🧭 Joshua co-pilot</span>
+        <span class="role rest">😴 LJ + Youssef</span>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- /koereplan opt2 -->
 </section>
 
 <section id="parkering">
   <span class="kicker">Parker fornuftigt</span>
   <h2 class="sectitle">Hvor stiller vi camperen?</h2>
-  <p class="secdesc">Tættest på centrum uden at betale hotel-priser. Alle fem er rigtige Stellplätze/campingpladser lavet til autocampere, ikke gadeparkering.</p>
+  <p class="secdesc">Tættest på centrum uden at betale hotel-priser, rigtige Stellplätze/campingpladser til autocampere, ikke gadeparkering. Skifter med rute-valget øverst.</p>
 
+  <div class="opt-block opt1 active" id="parkering-opt1">
   <div class="parklist">
 
     <div class="parkcard">
@@ -851,8 +1302,62 @@
     </div>
 
   </div>
-
   <p class="parknote">Priser er cirka-priser og ændrer sig med sæsonen, book direkte hos hver plads for korrekt pris og ledighed. August er højsæson i alle fem byer, book så tidligt som muligt.</p>
+  </div><!-- /parkering opt1 -->
+
+  <div class="opt-block opt2" id="parkering-opt2">
+  <div class="parklist">
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Amsterdam</span><span class="pname">Camperpark Amsterdam</span></div>
+        <span class="pprice">~25-30€/nat</span>
+      </div>
+      <p>Ved Gaasperplas, metrolinje 53 lige ved siden af pladsen, kører direkte til Amsterdam Centraal på cirka 15 minutter.</p>
+      <div class="parklinks">
+        <a class="book" href="https://camperparkamsterdam.nl/en/reservation" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Camperpark+Amsterdam+Gaasperplas" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Paris</span><span class="pname">Camping de Paris</span></div>
+        <span class="pprice">~35-45€/nat</span>
+      </div>
+      <p>I Bois de Boulogne, 16. arrondissement, ved Seinen. Gratis shuttlebus til Metro Porte Maillot.</p>
+      <div class="parklinks">
+        <a class="book" href="https://www.campingparis.fr/" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Camping+de+Paris+Bois+de+Boulogne" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Nice</span><span class="pname">Aire Boulevard Franck Pilatte</span></div>
+        <span class="pprice">~15-25€/nat</span>
+      </div>
+      <p>Kommunal aire lige i Nice selv, tæt på havnen og en park, gåafstand til Vieux Nice og Promenade des Anglais. Ingen forudbooking, betales på stedet, kom gerne tidligt på dagen i august.</p>
+      <div class="parklinks">
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Aire+camping-car+Boulevard+Franck+Pilatte+Nice" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+    <div class="parkcard">
+      <div class="parktop">
+        <div><span class="pcity">Strasbourg</span><span class="pname">Camping de Strasbourg (CityKamp)</span></div>
+        <span class="pprice">~29-35€/nat</span>
+      </div>
+      <p>I Montagne Verte-kvarteret, 10 minutter på cykel eller med sporvogn til Petite France.</p>
+      <div class="parklinks">
+        <a class="book" href="https://www.camping-strasbourg.com/" target="_blank" rel="noopener">🎫 Book plads →</a>
+        <a class="locate" href="https://www.google.com/maps/search/?api=1&query=Camping+de+Strasbourg+CityKamp" target="_blank" rel="noopener">📍 Google Maps →</a>
+      </div>
+    </div>
+
+  </div>
+  <p class="parknote">Nice-pladsen kan ikke forudbookes online, den er kommunal og fungerer først-til-mølle. Overvej at ankomme før klokken 18 i august.</p>
+  </div><!-- /parkering opt2 -->
 </section>
 
 <section id="camper" class="camperwrap">
@@ -895,7 +1400,7 @@
 <section id="budget">
   <span class="kicker">Hvad koster det</span>
   <h2 class="sectitle">Budget</h2>
-  <p class="secdesc">Estimat for hele turen. Skift mellem gruppe og per person.</p>
+  <p class="secdesc">Estimat for hele turen. Skift mellem gruppe og per person, budgettet følger den valgte rute-option øverst på siden.</p>
 
   <div class="toggle">
     <button id="btnGroup" class="active">Gruppe</button>
@@ -935,7 +1440,7 @@
 
 <script>
   // ---- Countdown ----
-  const target = new Date("2026-07-27T10:00:00+02:00").getTime();
+  const target = new Date("2026-07-24T16:00:00+02:00").getTime();
   function pad(n){ return String(n).padStart(2,'0'); }
   function tick(){
     const now = Date.now();
@@ -962,8 +1467,19 @@
   tick();
   setInterval(tick, 1000);
 
+  // ---- Route/budget option toggle ----
+  let currentOption = 1;
+  function setOption(n){
+    currentOption = n;
+    document.getElementById('btnOpt1').classList.toggle('active', n===1);
+    document.getElementById('btnOpt2').classList.toggle('active', n===2);
+    document.querySelectorAll('.opt-block.opt1').forEach(el => el.classList.toggle('active', n===1));
+    document.querySelectorAll('.opt-block.opt2').forEach(el => el.classList.toggle('active', n===2));
+    renderBudget(currentBudgetMode);
+  }
+
   // ---- Budget data ----
-  const budget = [
+  const budget1 = [
     {label:'Camper (7 dage, reel pris)', note:'Comfort Space Select, Indie Campers checkout', group:2107.74},
     {label:'Brændstof', note:'~3.050 km, diesel', group:575},
     {label:'Overnatning', note:'6 nætter, se Parkering-sektionen for steder', group:190},
@@ -971,8 +1487,19 @@
     {label:'Mad', note:'4 pers × 7 dage', group:560},
     {label:'Byoplevelser', note:'Entré, museer, transport', group:500},
   ];
+  const budget2 = [
+    {label:'Camper (7 dage, reel pris)', note:'Comfort Space Select, Indie Campers checkout', group:2107.74},
+    {label:'Brændstof', note:'~3.380 km, diesel', group:637},
+    {label:'Overnatning', note:'5 nætter (Amsterdam, Paris, 2× Nice, Strasbourg)', group:190},
+    {label:'Vejafgifter', note:'Fransk péage, lang strækning', group:180},
+    {label:'Mad', note:'4 pers × 7 dage', group:560},
+    {label:'Byoplevelser', note:'Entré, strand, Monaco-parkering', group:500},
+  ];
   const FX = 7.46;
+  let currentBudgetMode = 'group';
   function renderBudget(mode){
+    currentBudgetMode = mode;
+    const budget = currentOption === 2 ? budget2 : budget1;
     const el = document.getElementById('budgetList');
     const div = mode === 'person' ? 4 : 1;
     let total = 0;
