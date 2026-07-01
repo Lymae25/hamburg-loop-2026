@@ -288,6 +288,34 @@
   .packitem.checked{color:var(--ink-soft); text-decoration:line-through; background:var(--parchment-2);}
   .packprogress{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--teal); margin-bottom:14px;}
 
+  /* ---- City time breakdown ---- */
+  .citylist{display:flex; flex-direction:column; gap:10px;}
+  .citycard{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:15px 16px;
+  }
+  .citycard.thin{border-left:4px solid var(--ink-soft);}
+  .citycard.full{border-left:4px solid var(--teal);}
+  .citytop{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px;}
+  .citytop .cname{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:20px; text-transform:uppercase;}
+  .citytop .cbadge{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; font-weight:700;
+    padding:4px 9px; border-radius:100px; white-space:nowrap;
+  }
+  .citycard.thin .cbadge{background:var(--parchment-2); color:var(--ink-soft);}
+  .citycard.full .cbadge{background:var(--teal-soft); color:var(--teal);}
+  .citymeta{display:flex; gap:14px; margin-bottom:8px; flex-wrap:wrap;}
+  .citymeta span{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);}
+  .citymeta b{color:var(--ink); font-weight:700;}
+  .citycard p{margin:0; font-size:13.5px; color:var(--ink-soft);}
+  .whycard{
+    margin-top:20px; background:var(--parchment-2); border:1px dashed var(--ink-soft);
+    border-radius:var(--radius); padding:15px 16px;
+  }
+  .whycard b{display:block; font-family:'Big Shoulders Display',sans-serif; font-size:16px; text-transform:uppercase; margin-bottom:5px;}
+  .whycard p{margin:0 0 8px; font-size:13.5px; color:var(--ink);}
+  .whycard p:last-child{margin-bottom:0;}
+
   /* ---- Tips ---- */
   .tipsgrid{display:flex; flex-direction:column; gap:10px;}
   .tipcard{
@@ -322,7 +350,7 @@
 <header class="hero">
   <span class="eyebrow">● UGE 31 · 27 JUL–3 AUG 2026</span>
   <h1>Shabab Loop<br>Around<br><span>Europa.</span></h1>
-  <span class="banana-tag">🍌 Joshua laver planer som en banan</span>
+  <span class="banana-tag">🍌 Joshua laver planer som en banat</span>
   <p class="sub">Hamburg → Berlin → Prag → Nürnberg → Paris → Amsterdam → Hamburg. 2.400 km, fire (måske fem) mand, én camper. Highlights-tour, ikke afslapning.</p>
 
   <div class="crew">
@@ -348,6 +376,7 @@
 
 <nav class="quicknav">
   <a href="#rute">Rute</a>
+  <a href="#byer">Tid i byerne</a>
   <a href="#camper">Camper</a>
   <a href="#budget">Budget</a>
   <a href="#pakke">Pakkeliste</a>
@@ -494,6 +523,82 @@
       </div>
     </details>
 
+  </div>
+</section>
+
+<section id="byer">
+  <span class="kicker">Ærlig snak</span>
+  <h2 class="sectitle">Tid i hver by</h2>
+  <p class="secdesc">Vi kører 6 ud af 7 dage. Kun Paris giver en hel dag uden bilnøgler i hånden, resten er ankomst-aften + afgangs-morgen.</p>
+
+  <div class="citylist">
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Berlin</span>
+        <span class="cbadge">Aften + morgen</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~13 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst man 27/7 ca. 14:00, afgang tir 28/7 ca. 12:00.</p>
+    </div>
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Prag</span>
+        <span class="cbadge">Aften + morgen</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~11-12 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst tir 28/7 ca. 17:00, afgang ons 29/7 ca. 13:00.</p>
+    </div>
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Nürnberg</span>
+        <span class="cbadge">Kun aften</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~4-5 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst ons 29/7 ca. 17:00, tidlig afgang tor 30/7 ca. 08:00 pga. den lange køredag videre.</p>
+    </div>
+
+    <div class="citycard full">
+      <div class="citytop">
+        <span class="cname">Paris</span>
+        <span class="cbadge">1 hel dag</span>
+      </div>
+      <div class="citymeta">
+        <span><b>2</b> nætter</span>
+        <span><b>~27 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst tor 30/7 ca. 16:00, afgang lør 1/8 ca. 12:00. Den eneste by med en fridag uden kørsel.</p>
+    </div>
+
+    <div class="citycard thin">
+      <div class="citytop">
+        <span class="cname">Amsterdam</span>
+        <span class="cbadge">Aften + morgen</span>
+      </div>
+      <div class="citymeta">
+        <span><b>1</b> nat</span>
+        <span><b>~10 t</b> vågne timer</span>
+      </div>
+      <p>Ankomst lør 1/8 ca. 18:00, afgang søn 2/8 ca. 13:00.</p>
+    </div>
+
+  </div>
+
+  <div class="whycard">
+    <b>Hvorfor er Nürnberg overhovedet med?</b>
+    <p>Prag → Paris direkte er 890 km, cirka 9-10 timers kørsel. For langt til én camper-dag med fire mand og bagage.</p>
+    <p>Derfor er strækket delt: Prag → Nürnberg (380 km) og Nürnberg → Paris (500 km). Nürnberg ligger midtvejs og har gode Stellplätze, men det er en nødvendig pause, ikke en ønske-destination. Regn med kun en aften der, ikke en bytur.</p>
   </div>
 </section>
 
